@@ -47,11 +47,13 @@ class Staffs extends Controller {
             if(empty($data['name_err']) && empty($data['email_err']) && empty($data['phone_err']) && empty($data['date_of_birth_err'])){
                 if($this->staffModel->register($data)){
                     //success, proceed to login
+                    redirect('staff/login');
                 } else {
                     die('Something went wrong');
                 }
             } else {
                 //load view with errors
+                $this->view('staff/register', $data);
             }
         } else {
             //load empty form
