@@ -1,19 +1,22 @@
 <?php
-class Guest{
+class Members{
     private $db;
 
     public function __construct(){
         $this->db = new Database();
     }
 
-//register - add a guest to database
+//register - add a member to database
     public function register($data){
-        $sql = ("INSERT INTO guest (first_name, last_name, email, phone) VALUES (:first_name, :last_name, :email, :phone)");
+        $sql = ("INSERT INTO member (first_name, membership_id, last_name, email, phone, date_of_birth, emergency_contact, member_status) VALUES (:first_name, :membership_id, :last_name, :email, :phone, :date_of_birth, :emergency_contact, 'active')");
         $this->db->query($sql);
         $this->db->bind(':first_name', $data['first_name']);
+        $this->db->bind(':membership_id', $data['membership_id']);
         $this->db->bind(':last_name', $data['last_name']);
         $this->db->bind(':email', $data['email']);
         $this->db->bind(':phone', $data['phone']);
+        $this->db->bind(':date_of_birth', $data['date_of_birth']);
+        $this->db->bind(':emergency_contact', $data['emergency_contact']);
 
         if($this->db->execute()){
             return true;
@@ -21,22 +24,18 @@ class Guest{
             return false;
         }
     }
-
-//verify guest existance by email
     public function findEmail($email){
-        $this->db->query("SELECT * FROM guest WHERE email = :email");
+        $this->db->query("SELECT * FROM member WHERE email = :email");
         $this->db->bind(':email', $email);
         $row = $this->db->single();
-
         if($row){
             return $row;
         } else {
             return false;
         }
     }
-//verify guest existance by phone
     public function findPhone($phone){
-        $this->db->query("SELECT * FROM guest WHERE phone = :phone");
+        $this->db->query("SELECT * FROM member WHERE phone = :phone");
         $this->db->bind(':phone', $phone);
         $row = $this->db->single();
 
@@ -46,6 +45,6 @@ class Guest{
             return false;
         }
     }
-//getGuestId - get guest id for foreign keys
-    public function getGuestId(){}
+//getMemberId - get member id for foreign keys
+    public function getMemberId(){}
 }
