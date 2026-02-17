@@ -39,17 +39,4 @@ class Members{
             return false;
         }
     }
-    public function findPhone($phone){
-        $this->db->query("SELECT * FROM member WHERE phone = :phone");
-        $this->db->bind(':phone', $phone);
-        $row = $this->db->single();
-
-        if($row){
-            return $row;
-        } else {
-            return false;
-        }
-    }
-//getMemberId - get member id for foreign keys
-    public function getMemberId(){}
 }
