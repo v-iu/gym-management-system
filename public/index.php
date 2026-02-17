@@ -10,6 +10,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit();
 }
 
-require_once '../app/init.php';
+require_once '../backend/init.php';
 
 $app = new App();

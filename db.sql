@@ -11,6 +11,7 @@ CREATE TABLE staff (
     phone VARCHAR(20) UNIQUE NOT NULL,
     date_of_birth DATE NOT NULL,
     role ENUM('admin', 'trainer', 'receptionist', 'janitor') NOT NULL DEFAULT 'trainer',
+    password VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
