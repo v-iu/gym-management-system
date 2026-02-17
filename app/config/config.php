@@ -10,4 +10,6 @@ define('APPROOT', dirname(dirname(__FILE__)));
 //URL root
 define('URLROOT', 'http://localhost/gym-management-system');
 //site name for now
-define('SITENAME', "Gym Management System"); 
+define('SITENAME', "Gym Management System");
+//frontend build path
+define('FRONTEND_ROOT', dirname(dirname(dirname(__FILE__))) . '/frontend/dist'); 
