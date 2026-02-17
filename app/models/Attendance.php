@@ -13,7 +13,7 @@ class Attendance {
         $date = date('Y-m-d H:i:s');  
 
         //insert to create new attendance record w check in time
-        //need to change if statements to check type of user instead
+        //if guest id, insert with guest id and staff id, if member id, insert member id and staff id
         if ($guest_id){
             $sql = ("INSERT INTO attendance (guest_id, staff_id, check_in_time) VALUES (:guest_id, :staff_id,:check_in_time)");
             $this->db->query($sql);
