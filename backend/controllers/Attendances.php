@@ -6,31 +6,30 @@ class Attendances extends Controller{
 
     public function checkInOut(){
         if($_SERVER['REQUEST_METHOD'] == 'POST'){
-            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_SPECIAL_CHARS);
+            $data = $this->getRequestBody();
 
-            $data = [
-                'email' => trim($_POST['email'] ?? ''),
-                'action' => trim($_POST['action'] ?? 'checkin'), // checkin or checkout
-                'email_err' => ''
-            ];
+            $errors = [];
+
+            $email = trim($data['email'] ?? '');
+            $action = trim($data['action'] ?? 'checkin');
 
         //guest and member models
             $memberModel = $this->model('Member');
             $guestModel  = $this->model('Guest');
 
         //find user by email
-            $member = $memberModel->findEmail($data['email']);
-            $guest  = $guestModel->findEmail($data['email']);
+            $member = $memberModel->findEmail($email);
+            $guest  = $guestModel->findEmail($email);
 
         //errors
-            if(empty($data['email'])){
-                $data['email_err'] = "Please enter email";
+            if(empty($email)){
+                $errors['email'] = "Please enter email";
             } elseif (!$member && !$guest){
-                $data['email_err'] = "Email not found";
+                $errors['email'] = "Email not found";
             }
 
         //if no more errors
-            if(empty($data['email_err'])){
+            if(empty($errors)){
                 $member_id = null;
                 $guest_id  = null;
 
@@ -40,21 +39,22 @@ class Attendances extends Controller{
                 } elseif($guest){
                     $guest_id = $guest->id;
                 } else {
-                    die("ID not retrieved");
+                    $this->error('ID not retrieved', 500);
                 }
             
             //staff id should come from SESSION set from logging in as staff
-                $staff_id = $_SESSION['user_id'];
+                $staff_id = $_SESSION['user_id'] ?? null;
 
             //either check in or check out
-                if($data['action'] == 'checkin'){
+                if($action == 'checkin'){
                     $this->attendanceModel->checkIn($member_id, $guest_id, $staff_id);
+                    $this->json(['success' => true, 'message' => 'Checked in successfully']);
                 } else {
                     $this->attendanceModel->checkOut($member_id, $guest_id);
+                    $this->json(['success' => true, 'message' => 'Checked out successfully']);
                 }
             } else {
-            //load view with errors
-                $this->view('users/checkinout', $data);
+                $this->json(['success' => false, 'errors' => $errors], 422);
             }
         } else {
             //load empty form
@@ -63,9 +63,6 @@ class Attendances extends Controller{
                 'action' => 'checkin',
                 'email_err' => ''
             ];
-
-            $this->view('users/checkinout', $data);
         }
     }
-
 }

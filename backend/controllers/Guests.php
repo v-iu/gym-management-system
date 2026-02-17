@@ -37,27 +37,20 @@ class Guests extends Controller {
         //if no more errors, register
             if(empty($data['name_err']) && empty($data['email_err']) && empty($data['phone_err'])){
                 if($this->guestModel->register($data)){
-                    //success
-                    redirect('users/registerGuest');
+                    $this->json(['success' => true, 'message' => 'Guest registered successfully'], 201);
                 } else {
-                    die('Something went wrong');
+                    $this->error('Something went wrong', 500);
                 }
             } else {
-                //load view with errors
-                $this->view('users/registerGuest', $data);
+                $errors = array_filter([
+                    'name' => $data['name_err'],
+                    'email' => $data['email_err'],
+                    'phone' => $data['phone_err']
+                ]);
+                $this->json(['success' => false, 'errors' => $errors], 422);
             }
         } else {
-            //load empty form
-            $data = [
-                'first_name' => '',
-                'last_name' => '',
-                'email' => '',
-                'phone' => '',
-                'name_err' => '',
-                'email_err' => '',
-                'phone_err' => ''
-            ];
-            $this->view('users/registerGuest', $data);
+            $this->error('Method not allowed', 405);
         }
     }
 }
