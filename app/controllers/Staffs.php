@@ -66,6 +66,66 @@ class Staffs extends Controller {
                 'email_err' => '',
                 'phone_err' => ''
             ];
+            $this->view('staff/register', $data);
         }
+    }
+
+    public function login(){
+        if($_SERVER['REQUEST_METHOD'] == 'POST'){
+            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_SPECIAL_CHARS);//sanitize
+    
+            $data = [
+                'email' => trim($_POST['email'] ?? ''),
+                'password' => trim($_POST['password'] ?? ''),
+                'name_err' => '',
+                'email_err' => '',
+                'password_err' => ''
+            ];
+        //errors
+            if(empty($data['email'])){
+                $data['email_err'] = "Please enter email";
+            } elseif (!$this->staffModel->findEmail($data['email'])){
+                $data['email_err'] = "Email does not exist";
+            }
+            if(empty($data['password'])){
+                $data['password_err'] = 'Enter password';
+            }
+
+            if(empty($data['email_err']) && empty($data['password_err'])){
+                $loggedStaff = $this->staffModel->login($data['email'], $data['password']);
+                
+                if($loggedStaff){
+                    $this->createSession($loggedStaff);
+                } else {
+                    $data['password_err'] = 'Wrong email or password';
+                    $this->view('staff/login', $data);
+                }
+            } else {
+                //load view with errors
+                $this->view('staff/login', $data);
+            }
+        } else {
+            //load empty form
+            $data = [
+                'email' => '',
+                'password' => '',
+                'email_err' => '',
+                'password_err' => ''
+            ];
+            $this->view('staff/login', $data);
+        }
+    }
+
+    public function createSession($staff){
+        $_SESSION['user_id'] = $staff->id;
+        $_SESSION['user_email'] = $staff->email;
+        redirect('staff/home');
+    }
+
+    public function logout(){
+        unset($_SESSION['user_id']);
+        unset($_SESSION['user_email']);
+        session_destroy();
+        redirect('staff/login');
     }
 }

@@ -38,13 +38,13 @@ class Guests extends Controller {
             if(empty($data['name_err']) && empty($data['email_err']) && empty($data['phone_err'])){
                 if($this->guestModel->register($data)){
                     //success
-                    redirect('users/register');
+                    redirect('users/registerGuest');
                 } else {
                     die('Something went wrong');
                 }
             } else {
                 //load view with errors
-                $this->view('users/register', $data);
+                $this->view('users/registerGuest', $data);
             }
         } else {
             //load empty form
@@ -57,6 +57,7 @@ class Guests extends Controller {
                 'email_err' => '',
                 'phone_err' => ''
             ];
+            $this->view('users/registerGuest', $data);
         }
     }
 }

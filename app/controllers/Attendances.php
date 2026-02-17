@@ -63,6 +63,8 @@ class Attendances extends Controller{
                 'action' => 'checkin',
                 'email_err' => ''
             ];
+
+            $this->view('users/checkinout', $data);
         }
     }
 

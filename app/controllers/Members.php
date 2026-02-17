@@ -60,13 +60,13 @@ class Members extends Controller {
             if(empty($data['membership_id_err']) && empty($data['name_err']) && empty($data['email_err']) && empty($data['phone_err']) && empty($data['date_of_birth_err']) && empty($data['emergency_contact_err'])){
                 if($this->memberModel->register($data)){
                     //success
-                    redirect('users/register');
+                    redirect('users/registerMember');
                 } else {
                     die('Something went wrong');
                 }
             } else {
                 //load view with errors
-                $this->view('users/register', $data);
+                $this->view('users/registerMember', $data);
             }
         } else {
             //load empty form
@@ -85,6 +85,7 @@ class Members extends Controller {
                 'date_of_birth_err' => '',
                 'emergency_contact_err' => ''
             ];
+            $this->view('users/registerMember', $data);
         }
     }
 }
