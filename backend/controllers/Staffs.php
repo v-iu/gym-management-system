@@ -46,27 +46,21 @@ class Staffs extends Controller {
         //if no more errors, register
             if(empty($data['name_err']) && empty($data['email_err']) && empty($data['phone_err']) && empty($data['date_of_birth_err'])){
                 if($this->staffModel->register($data)){
-                    //success, proceed to login
-                    redirect('staff/login');
+                    $this->json(['success' => true, 'message' => 'Staff registered successfully'], 201);
                 } else {
-                    die('Something went wrong');
+                    $this->error('Something went wrong', 500);
                 }
             } else {
-                //load view with errors
-                $this->view('staff/register', $data);
+                $errors = array_filter([
+                    'name' => $data['name_err'],
+                    'email' => $data['email_err'],
+                    'phone' => $data['phone_err'],
+                    'date_of_birth' => $data['date_of_birth_err']
+                ]);
+                $this->json(['success' => false, 'errors' => $errors], 422);
             }
         } else {
-            //load empty form
-            $data = [
-                'first_name' => '',
-                'last_name' => '',
-                'email' => '',
-                'phone' => '',
-                'name_err' => '',
-                'email_err' => '',
-                'phone_err' => ''
-            ];
-            $this->view('staff/register', $data);
+            $this->error('Method not allowed', 405);
         }
     }
 

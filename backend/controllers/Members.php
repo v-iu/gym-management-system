@@ -59,33 +59,23 @@ class Members extends Controller {
         //if no more errors, register
             if(empty($data['membership_id_err']) && empty($data['name_err']) && empty($data['email_err']) && empty($data['phone_err']) && empty($data['date_of_birth_err']) && empty($data['emergency_contact_err'])){
                 if($this->memberModel->register($data)){
-                    //success
-                    redirect('users/registerMember');
+                    $this->json(['success' => true, 'message' => 'Member registered successfully'], 201);
                 } else {
-                    die('Something went wrong');
+                    $this->error('Something went wrong', 500);
                 }
             } else {
-                //load view with errors
-                $this->view('users/registerMember', $data);
+                $errors = array_filter([
+                    'membership_id' => $data['membership_id_err'],
+                    'name' => $data['name_err'],
+                    'email' => $data['email_err'],
+                    'phone' => $data['phone_err'],
+                    'date_of_birth' => $data['date_of_birth_err'],
+                    'emergency_contact' => $data['emergency_contact_err']
+                ]);
+                $this->json(['success' => false, 'errors' => $errors], 422);
             }
         } else {
-            //load empty form
-            $data = [
-                'membership_id' => '',
-                'first_name' => '',
-                'last_name' => '',
-                'email' => '',
-                'phone' => '',
-                'date_of_birth' => '',
-                'emergency_contact' => '',
-                'membership_id_err' => '',
-                'name_err' => '',
-                'email_err' => '',
-                'phone_err' => '',
-                'date_of_birth_err' => '',
-                'emergency_contact_err' => ''
-            ];
-            $this->view('users/registerMember', $data);
+            $this->error('Method not allowed', 405);
         }
     }
 }
