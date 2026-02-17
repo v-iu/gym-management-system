@@ -38,7 +38,7 @@ class Guests extends Controller {
             if(empty($data['name_err']) && empty($data['email_err']) && empty($data['phone_err'])){
                 if($this->guestModel->register($data)){
                     //success
-                    redirect('guests/register');
+                    redirect('users/register');
                 } else {
                     die('Something went wrong');
                 }

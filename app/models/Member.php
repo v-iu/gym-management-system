@@ -6,6 +6,11 @@ class Members{
         $this->db = new Database();
     }
 
+//show all registered members
+    public function getMembers(){
+        $this->db->query("SELECT first_name, last_name, email, phone, date_of_birthcreated_at FROM guest");
+        return $this->db->resultSet();
+    }
 //register - add a member to database
     public function register($data){
         $sql = ("INSERT INTO member (first_name, membership_id, last_name, email, phone, date_of_birth, emergency_contact, member_status) VALUES (:first_name, :membership_id, :last_name, :email, :phone, :date_of_birth, :emergency_contact, 'active')");

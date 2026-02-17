@@ -7,27 +7,24 @@ class Attendance {
     }
 
 //checkIn - check in time
-    public function checkIn($data){
+    public function checkIn($member_id, $guest_id, $staff_id){
         //get date time now
         date_default_timezone_set('Asia/Manila');
         $date = date('Y-m-d H:i:s');  
 
         //insert to create new attendance record w check in time
         //need to change if statements to check type of user instead
-        if($data['staff_id']){
-            $sql = ("INSERT INTO attendance (staff_id, check_in_time) VALUES (:staff_id, :check_in_time)");
+        if ($guest_id){
+            $sql = ("INSERT INTO attendance (guest_id, staff_id, check_in_time) VALUES (:guest_id, :staff_id,:check_in_time)");
             $this->db->query($sql);
-            $this->db->bind(':staff_id', $data['staff_id']);
+            $this->db->bind(':guest_id', $guest_id);
+            $this->db->bind(':staff_id', $staff_id);
             $this->db->bind(':check_in_time', $date);    
-        } else if ($data['guest_id']){
-            $sql = ("INSERT INTO attendance (guest_id, check_in_time) VALUES (:guest_id, :check_in_time)");
+        } else if ($member_id){
+            $sql = ("INSERT INTO attendance (member_id, staff_id, check_in_time) VALUES (:member_id, :staff_id, :check_in_time)");
             $this->db->query($sql);
-            $this->db->bind(':guest_id', $data['guest_id']);
-            $this->db->bind(':check_in_time', $date);    
-        } else if ($data['member_id']){
-            $sql = ("INSERT INTO attendance (member_id, check_in_time) VALUES (:member_id, :check_in_time)");
-            $this->db->query($sql);
-            $this->db->bind(':member_id', $data['member_id']);
+            $this->db->bind(':member_id', $member_id);
+            $this->db->bind(':staff_id', $staff_id);
             $this->db->bind(':check_in_time', $date);
         }
 
@@ -39,28 +36,22 @@ class Attendance {
     }
 
 //checkOut - check out time
-    public function checkOut($data){
+    public function checkOut($member_id, $guest_id){
         //get date time now
         date_default_timezone_set('Asia/Manila');
         $date = date('Y-m-d') . '%'; //only get current date w % to match any time on certain date
         $datetime = date('Y-m-d H:i:s');  //date and time for check out time
 
         //get the attendance id first - select the specific guest/member/staff id on the specific date to update
-        if($data['staff_id']){
-            $this->db->query("SELECT id FROM attendance WHERE staff_id = :staff_id AND DATE(check_in_time) = :date");
-            $this->db->bind(':staff_id', $data['staff_id']);
-            $this->db->bind(':date', $date);
-            $id = $this->db->single();
-
-        } else if ($data['guest_id']){
+        if ($guest_id){
             $this->db->query("SELECT id FROM attendance WHERE guest_id = :guest_id AND DATE(check_in_time) = :date");
-            $this->db->bind(':guest_id', $data['guest_id']);
+            $this->db->bind(':guest_id', $guest_id);
             $this->db->bind(':date', $date);
             $id = $this->db->single();
             
-        } else if ($data['member_id']){
+        } else if ($member_id){
             $this->db->query("SELECT id FROM attendance WHERE member_id = :member_id AND DATE(check_in_time) = :date");
-            $this->db->bind(':member_id', $data['member_id']);
+            $this->db->bind(':member_id', $member_id);
             $this->db->bind(':date', $date);
             $id = $this->db->single();
         }
