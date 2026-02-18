@@ -40,18 +40,4 @@ class Guest{
             return false;
         }
     }
-//verify guest existance by phone
-    public function findPhone($phone){
-        $this->db->query("SELECT * FROM guest WHERE phone = :phone");
-        $this->db->bind(':phone', $phone);
-        $row = $this->db->single();
-
-        if($row){
-            return $row;
-        } else {
-            return false;
-        }
-    }
-//getGuestId - get guest id for foreign keys
-    public function getGuestId(){}
 }

@@ -8,12 +8,12 @@ class Members{
 
 //show all registered members
     public function getMembers(){
-        $this->db->query("SELECT first_name, last_name, email, phone, date_of_birthcreated_at FROM guest");
+        $this->db->query("SELECT first_name, last_name, email, phone, date_of_birth, created_at FROM guest");
         return $this->db->resultSet();
     }
 //register - add a member to database
     public function register($data){
-        $sql = ("INSERT INTO member (first_name, membership_id, last_name, email, phone, date_of_birth, emergency_contact, member_status) VALUES (:first_name, :membership_id, :last_name, :email, :phone, :date_of_birth, :emergency_contact, 'active')");
+        $sql = ("INSERT INTO member (first_name, membership_id, last_name, email, phone, date_of_birth, emergency_contact, member_status) VALUES (:first_name, :membership_id, :last_name, :email, :phone, :date_of_birth, :emergency_contact, :member_status)");
         $this->db->query($sql);
         $this->db->bind(':first_name', $data['first_name']);
         $this->db->bind(':membership_id', $data['membership_id']);
@@ -22,6 +22,7 @@ class Members{
         $this->db->bind(':phone', $data['phone']);
         $this->db->bind(':date_of_birth', $data['date_of_birth']);
         $this->db->bind(':emergency_contact', $data['emergency_contact']);
+        $this->db->bind(':member_status', $data['member_status'] ?? 'active');
 
         if($this->db->execute()){
             return true;
