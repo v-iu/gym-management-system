@@ -1,42 +1,83 @@
-import { useState } from 'react'
-import HomePage from './pages/Homepage'
-import MembersPage from './pages/MembersPage'
-import StaffLoginPage from './pages/StaffLoginPage'
-import NotFoundPage from './pages/NotFoundPage'
-import Navbar from './components/Navbar'
-import gymBg from './assets/gym-bg.jpg'
+/**
+ * ============================================================
+ *  Sample Router — Reference for React Router Setup
+ * ============================================================
+ *
+ *  This file shows how to set up React Router for the app.
+ *
+ *  HOW TO INTEGRATE INTO YOUR APP:
+ *  ───────────────────────────────
+ *
+ *  1. Install react-router-dom:
+ *       npm install react-router-dom
+ *
+ *  2. In main.jsx, wrap <App /> with <BrowserRouter>:
+ *
+ *       import { BrowserRouter } from "react-router-dom";
+ *       createRoot(document.getElementById('root')).render(
+ *         <StrictMode>
+ *           <BrowserRouter>
+ *             <App />
+ *           </BrowserRouter>
+ *         </StrictMode>
+ *       );
+ *
+ *  3. In App.jsx, replace the manual switch/case routing with
+ *     React Router's <Routes> and <Route>, as shown below.
+ *
+ *  ROUTE STRUCTURE:
+ *  ────────────────
+ *    /                → HomePage
+ *    /members         → MembersPage
+ *    /staff           → StaffLoginPage
+ *    /sample          → SampleCrudPage (sidebar layout) → SampleDashboard
+ *    /sample/crud     → SampleCrudPage → SampleListPage
+ *    /sample/crud/:id → SampleCrudPage → SampleDetailPage
+ *    *                → NotFoundPage
+ *
+ *  KEY CONCEPTS:
+ *  ─────────────
+ *  <Route>     — maps a URL path to a component
+ *  <Outlet />  — renders the matched child route inside a layout
+ *  <Link to>   — navigates without page reload (replaces <a href>)
+ *  useParams() — reads URL params like :id
+ *  useNavigate() — programmatic navigation (like redirect)
+ *
+ * ============================================================
+ */
 
+import { Routes, Route, Navigate } from "react-router-dom";
 
-function App() {
-    const [currentPage, setCurrentPage] = useState("home");
+// ─── Sample Reference (sidebar layout + nested pages) ──────
+import SampleLayout from "./pages/SampleLayout";
+import SampleDashboard from "./pages/sample/SampleDashboard";
+import SampleListPage from "./pages/sample/SampleListPage";
+import SampleDetailPage from "./pages/sample/SampleDetailPage";
 
-    const renderPage = () => {
-        switch (currentPage) {
-            case "home":
-            return <HomePage />
-            case "members":
-            return <MembersPage />
-            case "staff":
-            return <StaffLoginPage />
-            default:
-            return <NotFoundPage />
-        }
-    }
-
+export default function AppRoutes() {
   return (
-    <div 
-      className="min-h-screen bg-[#0B0F0C] text-white antialiased bg-cover bg-no-repeat"
-      style={{ backgroundImage: `url(${gymBg})`}}    
-    >
-      <div className="bg-black/70 min-h-screen">
-        <Navbar currentPage={ currentPage } setCurrentPage={ setCurrentPage } />
+    <Routes>
+      <Route path="/" element={<Navigate to="/sample" replace />} />
 
-        <main>
-        { renderPage() }
-        </main>
-      </div>
-    </div>
+      {/* ── Sample Reference (sidebar layout) ───────────────── */}
+
+      {/*
+        SampleLayout renders:  Sidebar  +  <Outlet />
+        The sidebar stays mounted while child pages swap.
+
+        /sample          → SampleDashboard  (dashboard with stat cards)
+        /sample/crud     → SampleListPage   (CRUD list + form)
+        /sample/crud/5   → SampleDetailPage (single item view)
+      */}
+
+      <Route path="/sample" element={<SampleLayout />}>
+        <Route index element={<SampleDashboard />} />
+        <Route path="crud" element={<SampleListPage />} />
+        <Route path="crud/:id" element={<SampleDetailPage />} />
+      </Route>
+
+      {/* ── Catch-all (404) — TODO: create NotFoundPage ──── */}
+      {/* <Route path="*" element={<NotFoundPage />} /> */}
+    </Routes>
   );
 }
-
-export default App

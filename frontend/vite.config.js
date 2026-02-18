@@ -8,4 +8,13 @@ export default defineConfig({
       react(),
       tailwindcss()
   ],
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost',
+        changeOrigin: true,
+        rewrite: (path) => `/gym-management-system/index.php?url=${path.replace(/^\/api\//, '')}`
+      }
+    }
+  },
 })
