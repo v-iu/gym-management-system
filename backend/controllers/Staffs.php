@@ -16,10 +16,12 @@ class Staffs extends Controller {
                 'phone' => trim($_POST['phone'] ?? ''),
                 'date_of_birth' => trim($_POST['date_of_birth'] ?? ''),
                 'role' => trim($_POST['role'] ?? 'trainer'),
+                'password' => trim($_POST['password'] ?? ''),
                 'name_err' => '',
                 'email_err' => '',
                 'phone_err' => '',
                 'date_of_birth_err' => '',
+                'password_err' => '',
             ];
 
         //errors
@@ -42,9 +44,16 @@ class Staffs extends Controller {
             if(empty($data['date_of_birth'])){
                 $data['date_of_birth_err'] = "Please enter date of birth";
             }
+            if(empty($data['password'])){
+                $data['password_err'] = 'Please enter a password';
+            } elseif (strlen($data['password']) < 6){
+                $data['password_err'] = 'Password must 6 characters long';
+            } elseif(!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).+$/', $data['password'])){
+                $data['password_err'] = "Password must contain an uppercase, lowercase, numbers and special characters.";
+            }
 
         //if no more errors, register
-            if(empty($data['name_err']) && empty($data['email_err']) && empty($data['phone_err']) && empty($data['date_of_birth_err'])){
+            if(empty($data['name_err']) && empty($data['email_err']) && empty($data['phone_err']) && empty($data['date_of_birth_err'] && empty($data['password_err']))){
                 if($this->staffModel->register($data)){
                     $this->json(['success' => true, 'message' => 'Staff registered successfully'], 201);
                 } else {
@@ -55,7 +64,8 @@ class Staffs extends Controller {
                     'name' => $data['name_err'],
                     'email' => $data['email_err'],
                     'phone' => $data['phone_err'],
-                    'date_of_birth' => $data['date_of_birth_err']
+                    'date_of_birth' => $data['date_of_birth_err'],
+                    'password' => $data['password_err']
                 ]);
                 $this->json(['success' => false, 'errors' => $errors], 422);
             }
@@ -92,34 +102,36 @@ class Staffs extends Controller {
                     $this->createSession($loggedStaff);
                 } else {
                     $data['password_err'] = 'Wrong email or password';
-                    $this->view('staff/login', $data);
+                    $this->json(['success' => false, 'errors' => ['password' => $data['password_err']]], 422);
                 }
             } else {
                 //load view with errors
-                $this->view('staff/login', $data);
+                $errors = array_filter([
+                    'email' => $data['email_err'],
+                    'password' => $data['password_err']
+                ]);
+                $this->json(['success' => false, 'errors' => $errors], 422);
             }
         } else {
             //load empty form
-            $data = [
-                'email' => '',
-                'password' => '',
-                'email_err' => '',
-                'password_err' => ''
-            ];
-            $this->view('staff/login', $data);
+            $this->error('Method not allowed', 405);
         }
     }
 
     public function createSession($staff){
         $_SESSION['user_id'] = $staff->id;
         $_SESSION['user_email'] = $staff->email;
-        redirect('staff/home');
+        $session = array_filter([
+            'user_id' => $_SESSION['user_id'],
+            'user_email' => $_SESSION['user_email'],
+        ]);
+        $this->json(['success' => true, 'message', 'Session was created', 'session' => $session], 201);
     }
 
     public function logout(){
         unset($_SESSION['user_id']);
         unset($_SESSION['user_email']);
         session_destroy();
-        redirect('staff/login');
+        $this->json(['success' => true, 'message' => 'Logged out user'], 201);
     }
 }
