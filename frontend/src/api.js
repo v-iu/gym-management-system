@@ -55,3 +55,4 @@ export const api = {
 //
 // Check in:
 //   api.post('attendances/checkInOut', { email: 'john@example.com', action: 'checkin' })
+
