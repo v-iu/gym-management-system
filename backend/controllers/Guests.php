@@ -7,7 +7,7 @@ class Guests extends Controller {
 //register a guest
     public function register(){
         if($_SERVER['REQUEST_METHOD'] == 'POST'){
-            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_SPECIAL_CHARS);//sanitize
+            $data = $this->getRequestBody();
     
             $data = [
                 'first_name' => trim($_POST['first_name'] ?? ''),

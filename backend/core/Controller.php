@@ -5,7 +5,11 @@
             require_once '../backend/models/' . $model . '.php';
             return new $model();
         }
-
+    //get json request body
+        public function getRequestBody() {
+            $data = file_get_contents("php://input");
+            return json_decode($data, true);
+        }
     //send JSON response
         public function json($data, $statusCode = 200){
             http_response_code($statusCode);

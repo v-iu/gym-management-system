@@ -37,4 +37,28 @@ class Staff{
             return false;
         }
     }
+//find existing staff with email
+    public function findEmail($email){
+        $this->db->query("SELECT * FROM staff WHERE email = :email");
+        $this->db->bind(':email', $email);
+        $row = $this->db->single();
+
+        if($row){
+            return $row;
+        } else {
+            return false;
+        }
+    }
+//find existing staff with phone
+    public function findPhone($phone){
+        $this->db->query("SELECT * FROM staff WHERE phone = :phone");
+        $this->db->bind(':phone', $phone);
+        $row = $this->db->single();
+
+        if($row){
+            return $row;
+        } else {
+            return false;
+        }
+    }
 }

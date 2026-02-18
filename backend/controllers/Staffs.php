@@ -7,7 +7,7 @@ class Staffs extends Controller {
 //register a staff member
     public function register(){
         if($_SERVER['REQUEST_METHOD'] == 'POST'){
-            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_SPECIAL_CHARS);//sanitize
+            $data = $this->getRequestBody();
     
             $data = [
                 'first_name' => trim($_POST['first_name'] ?? ''),
@@ -76,7 +76,7 @@ class Staffs extends Controller {
 
     public function login(){
         if($_SERVER['REQUEST_METHOD'] == 'POST'){
-            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_SPECIAL_CHARS);//sanitize
+            $data = $this->getRequestBody();
     
             $data = [
                 'email' => trim($_POST['email'] ?? ''),

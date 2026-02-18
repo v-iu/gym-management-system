@@ -7,7 +7,7 @@ class Members extends Controller {
 //register a member
     public function register(){
         if($_SERVER['REQUEST_METHOD'] == 'POST'){
-            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_SPECIAL_CHARS);//sanitize
+            $data = $this->getRequestBody();
     
             $data = [
                 'membership_id' => trim($_POST['membership_id'] ?? ''),
@@ -17,12 +17,14 @@ class Members extends Controller {
                 'phone' => trim($_POST['phone'] ?? ''),
                 'date_of_birth' => trim($_POST['date_of_birth'] ?? ''),
                 'emergency_contact' => trim($_POST['emergency_contact'] ?? ''),
+                'member_status' => trim($_POST['member_status'] ?? 'active'),
                 'membership_id_err' => '',
                 'name_err' => '',
                 'email_err' => '',
                 'phone_err' => '',
                 'date_of_birth_err' => '',
-                'emergency_contact_err' => ''
+                'emergency_contact_err' => '',
+                'member_status_err' => ''
             ];
 
         //errors
@@ -55,9 +57,12 @@ class Members extends Controller {
             if(empty($data['emergency_contact'])){
                 $data['emergency_contact_err'] = "Please enter an emergency contact";
             }
+            if(empty($data['member_status'])){
+                $data['member_status_err'] =  "Select the member's status";
+            }
 
         //if no more errors, register
-            if(empty($data['membership_id_err']) && empty($data['name_err']) && empty($data['email_err']) && empty($data['phone_err']) && empty($data['date_of_birth_err']) && empty($data['emergency_contact_err'])){
+            if(empty($data['membership_id_err']) && empty($data['name_err']) && empty($data['email_err']) && empty($data['phone_err']) && empty($data['date_of_birth_err']) && empty($data['emergency_contact_err']) && empty($data['member_status_err'])){
                 if($this->memberModel->register($data)){
                     $this->json(['success' => true, 'message' => 'Member registered successfully'], 201);
                 } else {
@@ -70,7 +75,8 @@ class Members extends Controller {
                     'email' => $data['email_err'],
                     'phone' => $data['phone_err'],
                     'date_of_birth' => $data['date_of_birth_err'],
-                    'emergency_contact' => $data['emergency_contact_err']
+                    'emergency_contact' => $data['emergency_contact_err'],
+                    'member_status' => $data['member_status_err']
                 ]);
                 $this->json(['success' => false, 'errors' => $errors], 422);
             }
