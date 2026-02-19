@@ -4,65 +4,83 @@ class Attendances extends Controller{
         $this->attendanceModel = $this->model('Attendance');
     }
 
-    public function checkInOut(){
-        if($_SERVER['REQUEST_METHOD'] == 'POST'){
-            $data = $this->getRequestBody();
+    // GET - List all attendance records
+    public function index(){
+        $this->requireMethod('GET');
+        $attendance = $this->attendanceModel->getAttendance();
+        $this->json(['success' => true, 'data' => $attendance]);
+    }
 
-            $errors = [];
+    // GET - Today's attendance only
+    public function today(){
+        $this->requireMethod('GET');
+        $attendance = $this->attendanceModel->getToday();
+        $this->json(['success' => true, 'data' => $attendance]);
+    }
 
-            $email = trim($data['email'] ?? '');
-            $action = trim($data['action'] ?? 'checkin');
+    // POST - Check in a member or guest
+    // Receptionist selects the person from the system and hits check-in
+    // Expects: { type: 'member'|'guest', person_id: int, staff_id: int }
+    public function checkin(){
+        $this->requireMethod('POST');
+        $data = $this->getRequestBody();
 
-        //guest and member models
-            $memberModel = $this->model('Member');
-            $guestModel  = $this->model('Guest');
+        $errors = [];
 
-        //find user by email
-            $member = $memberModel->findEmail($email);
-            $guest  = $guestModel->findEmail($email);
+        $type      = trim($data['type'] ?? '');       // 'member' or 'guest'
+        $person_id = trim($data['person_id'] ?? '');   // the member or guest id
+        $staff_id  = $data['staff_id'] ?? ($_SESSION['user_id'] ?? null);
 
-        //errors
-            if(empty($email)){
-                $errors['email'] = "Please enter email";
-            } elseif (!$member && !$guest){
-                $errors['email'] = "Email not found";
-            }
+        // Validate
+        if (empty($type) || !in_array($type, ['member', 'guest'])) {
+            $errors['type'] = 'Type must be "member" or "guest"';
+        }
+        if (empty($person_id)) {
+            $errors['person_id'] = 'Please select a member or guest';
+        }
 
-        //if no more errors
-            if(empty($errors)){
-                $member_id = null;
-                $guest_id  = null;
+        if (!empty($errors)) {
+            $this->json(['success' => false, 'errors' => $errors], 422);
+            return;
+        }
 
-            //set ids
-                if($member){
-                    $member_id = $member->id;
-                } elseif($guest){
-                    $guest_id = $guest->id;
-                } else {
-                    $this->error('ID not retrieved', 500);
-                }
-            
-            //staff id should come from SESSION set from logging in as staff
-                $staff_id = $_SESSION['user_id'] ?? null;
+        // Build attendance data
+        $attendanceData = [
+            'member_id' => ($type === 'member') ? $person_id : null,
+            'guest_id'  => ($type === 'guest')  ? $person_id : null,
+            'staff_id'  => $staff_id
+        ];
 
-            //either check in or check out
-                if($action == 'checkin'){
-                    $this->attendanceModel->checkIn($member_id, $guest_id, $staff_id);
-                    $this->json(['success' => true, 'message' => 'Checked in successfully']);
-                } else {
-                    $this->attendanceModel->checkOut($member_id, $guest_id);
-                    $this->json(['success' => true, 'message' => 'Checked out successfully']);
-                }
-            } else {
-                $this->json(['success' => false, 'errors' => $errors], 422);
-            }
+        // Check if already checked in today without checking out
+        if ($this->attendanceModel->isCheckedIn($type, $person_id)) {
+            $this->error('This person is already checked in today', 409);
+            return;
+        }
+
+        if ($this->attendanceModel->checkIn($attendanceData)) {
+            $this->json(['success' => true, 'message' => 'Checked in successfully']);
         } else {
-            //load empty form
-            $data = [
-                'email' => '',
-                'action' => 'checkin',
-                'email_err' => ''
-            ];
+            $this->error('Check-in failed', 500);
+        }
+    }
+
+    // POST - Check out by attendance record ID
+    // Expects: { attendance_id: int }
+    public function checkout(){
+        $this->requireMethod('POST');
+        $data = $this->getRequestBody();
+
+        $attendance_id = trim($data['attendance_id'] ?? '');
+
+        if (empty($attendance_id)) {
+            $this->error('Attendance record ID is required', 400);
+            return;
+        }
+
+        if ($this->attendanceModel->checkOut($attendance_id)) {
+            $this->json(['success' => true, 'message' => 'Checked out successfully']);
+        } else {
+            $this->error('Check-out failed. Record may not exist or already checked out.', 400);
         }
     }
 }

@@ -6,30 +6,17 @@ class Attendance {
         $this->db = new Database();
     }
 
-//checkIn - check in time
+//checkIn - insert attendance record with check-in time
     public function checkIn($data){
-        //get date time now
         date_default_timezone_set('Asia/Manila');
-        $date = date('Y-m-d H:i:s');  
+        $now = date('Y-m-d H:i:s');
 
-        //insert to create new attendance record w check in time
-        //need to change if statements to check type of user instead
-        if($data['staff_id']){
-            $sql = ("INSERT INTO attendance (staff_id, check_in_time) VALUES (:staff_id, :check_in_time)");
-            $this->db->query($sql);
-            $this->db->bind(':staff_id', $data['staff_id']);
-            $this->db->bind(':check_in_time', $date);    
-        } else if ($data['guest_id']){
-            $sql = ("INSERT INTO attendance (guest_id, check_in_time) VALUES (:guest_id, :check_in_time)");
-            $this->db->query($sql);
-            $this->db->bind(':guest_id', $data['guest_id']);
-            $this->db->bind(':check_in_time', $date);    
-        } else if ($data['member_id']){
-            $sql = ("INSERT INTO attendance (member_id, check_in_time) VALUES (:member_id, :check_in_time)");
-            $this->db->query($sql);
-            $this->db->bind(':member_id', $data['member_id']);
-            $this->db->bind(':check_in_time', $date);
-        }
+        $this->db->query("INSERT INTO attendance (member_id, guest_id, staff_id, check_in_time) 
+                          VALUES (:member_id, :guest_id, :staff_id, :check_in_time)");
+        $this->db->bind(':member_id', $data['member_id']);
+        $this->db->bind(':guest_id', $data['guest_id']);
+        $this->db->bind(':staff_id', $data['staff_id']);
+        $this->db->bind(':check_in_time', $now);
 
         if($this->db->execute()){
             return true;
@@ -38,50 +25,77 @@ class Attendance {
         }
     }
 
-//checkOut - check out time
-    public function checkOut($data){
-        //get date time now
+//checkOut - set check-out time on an existing attendance record by its ID
+    public function checkOut($attendanceId){
         date_default_timezone_set('Asia/Manila');
-        $date = date('Y-m-d') . '%'; //only get current date w % to match any time on certain date
-        $datetime = date('Y-m-d H:i:s');  //date and time for check out time
+        $now = date('Y-m-d H:i:s');
 
-        //get the attendance id first - select the specific guest/member/staff id on the specific date to update
-        if($data['staff_id']){
-            $this->db->query("SELECT id FROM attendance WHERE staff_id = :staff_id AND DATE(check_in_time) = :date");
-            $this->db->bind(':staff_id', $data['staff_id']);
-            $this->db->bind(':date', $date);
-            $id = $this->db->single();
+        $this->db->query("UPDATE attendance SET check_out_time = :checkout 
+                          WHERE id = :id AND check_out_time IS NULL");
+        $this->db->bind(':checkout', $now);
+        $this->db->bind(':id', $attendanceId);
+        $this->db->execute();
 
-        } else if ($data['guest_id']){
-            $this->db->query("SELECT id FROM attendance WHERE guest_id = :guest_id AND DATE(check_in_time) = :date");
-            $this->db->bind(':guest_id', $data['guest_id']);
-            $this->db->bind(':date', $date);
-            $id = $this->db->single();
-            
-        } else if ($data['member_id']){
-            $this->db->query("SELECT id FROM attendance WHERE member_id = :member_id AND DATE(check_in_time) = :date");
-            $this->db->bind(':member_id', $data['member_id']);
-            $this->db->bind(':date', $date);
-            $id = $this->db->single();
-        }
-        
-        //update record to set check out time
-        $sql = ("UPDATE attendance SET check_out_time = :checkout WHERE id = :id");
-        $this->db->query($sql);
-        $this->db->bind(':checkout', $datetime);
-        $this->db->bind(':id', $id);
-
-        if($this->db->execute()){
-            return true;
-        } else {
-            return false;
-        }
+        return $this->db->rowCount() > 0;
     }
 
-//getAttendance - to view attendance logs
+//isCheckedIn - check if a person is already checked in today (no checkout yet)
+    public function isCheckedIn($type, $personId){
+        date_default_timezone_set('Asia/Manila');
+        $today = date('Y-m-d');
+
+        $column = ($type === 'member') ? 'member_id' : 'guest_id';
+        $this->db->query("SELECT id FROM attendance 
+                          WHERE {$column} = :person_id 
+                          AND DATE(check_in_time) = :today 
+                          AND check_out_time IS NULL 
+                          LIMIT 1");
+        $this->db->bind(':person_id', $personId);
+        $this->db->bind(':today', $today);
+        $row = $this->db->single();
+
+        return $row ? true : false;
+    }
+
+//getAttendance - all attendance logs with joined names
     public function getAttendance(){
-        $this->db->query("SELECT a.id, s.first_name AS first_name, s.last_name AS last_name, g.first_name AS first_name, g.last_name AS last_name, m.first_name AS first_name, m.last_name AS last_name, a.check_in_time, a.check_out_time FROM attendance a LEFT JOIN staff s ON a.staff_id = s.id LEFT JOIN guest g ON a.guest_id = g.id LEFT JOIN member m ON a.member_id = m.id ORDER BY a.check_in_time DESC");
+        $this->db->query("SELECT a.id, a.member_id, a.guest_id, a.staff_id, a.check_in_time, a.check_out_time,
+                          m.first_name AS member_first_name, m.last_name AS member_last_name,
+                          g.first_name AS guest_first_name, g.last_name AS guest_last_name,
+                          s.first_name AS staff_first_name, s.last_name AS staff_last_name
+                          FROM attendance a 
+                          LEFT JOIN member m ON a.member_id = m.id 
+                          LEFT JOIN guest g ON a.guest_id = g.id 
+                          LEFT JOIN staff s ON a.staff_id = s.id 
+                          ORDER BY a.check_in_time DESC");
         return $this->db->resultSet();
     }
 
+//getToday - today's attendance only
+    public function getToday(){
+        date_default_timezone_set('Asia/Manila');
+        $today = date('Y-m-d');
+
+        $this->db->query("SELECT a.id, a.member_id, a.guest_id, a.staff_id, a.check_in_time, a.check_out_time,
+                          m.first_name AS member_first_name, m.last_name AS member_last_name,
+                          g.first_name AS guest_first_name, g.last_name AS guest_last_name,
+                          s.first_name AS staff_first_name, s.last_name AS staff_last_name
+                          FROM attendance a 
+                          LEFT JOIN member m ON a.member_id = m.id 
+                          LEFT JOIN guest g ON a.guest_id = g.id 
+                          LEFT JOIN staff s ON a.staff_id = s.id 
+                          WHERE DATE(a.check_in_time) = :today
+                          ORDER BY a.check_in_time DESC");
+        $this->db->bind(':today', $today);
+        return $this->db->resultSet();
+    }
+
+//todayCount - count of check-ins today (for dashboard)
+    public function todayCount(){
+        date_default_timezone_set('Asia/Manila');
+        $today = date('Y-m-d');
+        $this->db->query("SELECT COUNT(*) AS total FROM attendance WHERE DATE(check_in_time) = :today");
+        $this->db->bind(':today', $today);
+        return $this->db->single()->total;
+    }
 }
