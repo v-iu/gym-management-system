@@ -54,6 +54,9 @@ class Staffs extends Controller {
 
         //if no more errors, register
             if(empty($data['name_err']) && empty($data['email_err']) && empty($data['phone_err']) && empty($data['date_of_birth_err'] && empty($data['password_err']))){
+                // Hash password
+                $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
+
                 if($this->staffModel->register($data)){
                     $this->json(['success' => true, 'message' => 'Staff registered successfully'], 201);
                 } else {

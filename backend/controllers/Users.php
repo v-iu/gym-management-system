@@ -1,10 +1,10 @@
 <?php
-class Guests extends Controller {
+class Users extends Controller {
     public function __construct(){
-        $this->guestModel = $this->model('Guest');
+        $this->guestModel = $this->model('User');
     }
 
-//register a guest
+//register a user
     public function register(){
         if($_SERVER['REQUEST_METHOD'] == 'POST'){
             $data = $this->getRequestBody();

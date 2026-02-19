@@ -19,8 +19,8 @@ class Attendances extends Controller{
     }
 
     // POST - Check in a member or guest
-    // Receptionist selects the person from the system and hits check-in
-    // Expects: { type: 'member'|'guest', person_id: int, staff_id: int }
+    // Receptionist selects the user from the system and hits check-in
+    // Expects: { type: 'member'|'guest', user_id: int, staff_id: int }
     public function checkin(){
         $this->requireMethod('POST');
         $data = $this->getRequestBody();
@@ -28,15 +28,15 @@ class Attendances extends Controller{
         $errors = [];
 
         $type      = trim($data['type'] ?? '');       // 'member' or 'guest'
-        $person_id = trim($data['person_id'] ?? '');   // the member or guest id
+        $user_id = trim($data['user_id'] ?? '');   // the member or guest id
         $staff_id  = $data['staff_id'] ?? ($_SESSION['user_id'] ?? null);
 
         // Validate
         if (empty($type) || !in_array($type, ['member', 'guest'])) {
             $errors['type'] = 'Type must be "member" or "guest"';
         }
-        if (empty($person_id)) {
-            $errors['person_id'] = 'Please select a member or guest';
+        if (empty($user_id)) {
+            $errors['user_id'] = 'Please select a member or guest';
         }
 
         if (!empty($errors)) {
@@ -46,14 +46,13 @@ class Attendances extends Controller{
 
         // Build attendance data
         $attendanceData = [
-            'member_id' => ($type === 'member') ? $person_id : null,
-            'guest_id'  => ($type === 'guest')  ? $person_id : null,
+            'user_id'   => $user_id,
             'staff_id'  => $staff_id
         ];
 
         // Check if already checked in today without checking out
-        if ($this->attendanceModel->isCheckedIn($type, $person_id)) {
-            $this->error('This person is already checked in today', 409);
+        if ($this->attendanceModel->isCheckedIn($user_id)) {
+            $this->error('This user is already checked in today', 409);
             return;
         }
 

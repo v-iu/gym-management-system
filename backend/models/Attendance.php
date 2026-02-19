@@ -11,10 +11,9 @@ class Attendance {
         date_default_timezone_set('Asia/Manila');
         $now = date('Y-m-d H:i:s');
 
-        $this->db->query("INSERT INTO attendance (member_id, guest_id, staff_id, check_in_time) 
-                          VALUES (:member_id, :guest_id, :staff_id, :check_in_time)");
-        $this->db->bind(':member_id', $data['member_id']);
-        $this->db->bind(':guest_id', $data['guest_id']);
+        $this->db->query("INSERT INTO attendance (user_id, staff_id, check_in_time) 
+                          VALUES (:user_id, :staff_id, :check_in_time)");
+        $this->db->bind(':user_id', $data['user_id']);
         $this->db->bind(':staff_id', $data['staff_id']);
         $this->db->bind(':check_in_time', $now);
 
@@ -40,13 +39,12 @@ class Attendance {
     }
 
 //isCheckedIn - check if a person is already checked in today (no checkout yet)
-    public function isCheckedIn($type, $personId){
+    public function isCheckedIn($personId){
         date_default_timezone_set('Asia/Manila');
         $today = date('Y-m-d');
 
-        $column = ($type === 'member') ? 'member_id' : 'guest_id';
         $this->db->query("SELECT id FROM attendance 
-                          WHERE {$column} = :person_id 
+                          WHERE user_id = :person_id 
                           AND DATE(check_in_time) = :today 
                           AND check_out_time IS NULL 
                           LIMIT 1");
@@ -59,14 +57,13 @@ class Attendance {
 
 //getAttendance - all attendance logs with joined names
     public function getAttendance(){
-        $this->db->query("SELECT a.id, a.member_id, a.guest_id, a.staff_id, a.check_in_time, a.check_out_time,
-                          m.first_name AS member_first_name, m.last_name AS member_last_name,
-                          g.first_name AS guest_first_name, g.last_name AS guest_last_name,
-                          s.first_name AS staff_first_name, s.last_name AS staff_last_name
+        $this->db->query("SELECT a.id, a.user_id, a.staff_id, a.check_in_time, a.check_out_time,
+                          u.first_name AS user_first_name, u.last_name AS user_last_name, u.type AS user_type,
+                          s_user.first_name AS staff_first_name, s_user.last_name AS staff_last_name
                           FROM attendance a 
-                          LEFT JOIN member m ON a.member_id = m.id 
-                          LEFT JOIN guest g ON a.guest_id = g.id 
-                          LEFT JOIN staff s ON a.staff_id = s.id 
+                          JOIN user u ON a.user_id = u.id 
+                          JOIN staff s ON a.staff_id = s.id 
+                          JOIN user s_user ON s.id = s_user.id
                           ORDER BY a.check_in_time DESC");
         return $this->db->resultSet();
     }
@@ -76,14 +73,13 @@ class Attendance {
         date_default_timezone_set('Asia/Manila');
         $today = date('Y-m-d');
 
-        $this->db->query("SELECT a.id, a.member_id, a.guest_id, a.staff_id, a.check_in_time, a.check_out_time,
-                          m.first_name AS member_first_name, m.last_name AS member_last_name,
-                          g.first_name AS guest_first_name, g.last_name AS guest_last_name,
-                          s.first_name AS staff_first_name, s.last_name AS staff_last_name
+        $this->db->query("SELECT a.id, a.user_id, a.staff_id, a.check_in_time, a.check_out_time,
+                          u.first_name AS user_first_name, u.last_name AS user_last_name, u.type AS user_type,
+                          s_user.first_name AS staff_first_name, s_user.last_name AS staff_last_name
                           FROM attendance a 
-                          LEFT JOIN member m ON a.member_id = m.id 
-                          LEFT JOIN guest g ON a.guest_id = g.id 
-                          LEFT JOIN staff s ON a.staff_id = s.id 
+                          JOIN user u ON a.user_id = u.id 
+                          JOIN staff s ON a.staff_id = s.id 
+                          JOIN user s_user ON s.id = s_user.id
                           WHERE DATE(a.check_in_time) = :today
                           ORDER BY a.check_in_time DESC");
         $this->db->bind(':today', $today);
