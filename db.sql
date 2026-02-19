@@ -2,28 +2,25 @@
 CREATE DATABASE IF NOT EXISTS gym_management;
 USE gym_management;
 
--- 1. STAFF (Independent Table)
-CREATE TABLE staff (
+-- 1. USER (Central Identity Table)
+CREATE TABLE user (
     id INT PRIMARY KEY AUTO_INCREMENT,
     first_name VARCHAR(100) NOT NULL,
     last_name VARCHAR(100) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
     phone VARCHAR(20) UNIQUE NOT NULL,
-    date_of_birth DATE NOT NULL,
-    role ENUM('admin', 'trainer', 'receptionist', 'janitor') NOT NULL DEFAULT 'trainer',
-    password VARCHAR(255) NOT NULL,
+    type ENUM('staff', 'member', 'guest') NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
--- 2. GUEST (Independent Table)
-CREATE TABLE guest (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    first_name VARCHAR(100) NOT NULL,
-    last_name VARCHAR(100) NOT NULL,
-    email VARCHAR(255) NOT NULL,
-    phone VARCHAR(20) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+-- 2. STAFF (Extends User)
+CREATE TABLE staff (
+    id INT PRIMARY KEY,
+    date_of_birth DATE NOT NULL,
+    role ENUM('admin', 'trainer', 'receptionist', 'janitor') NOT NULL DEFAULT 'trainer',
+    password VARCHAR(255) NOT NULL,
+    FOREIGN KEY (id) REFERENCES user(id) ON DELETE CASCADE
 );
 
 -- 3. TRAINER_SERVICE (Independent Table)
@@ -46,19 +43,14 @@ CREATE TABLE membership (
     registered_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 5. MEMBER (Dependent on Membership)
+-- 5. MEMBER (Extends User, Dependent on Membership)
 CREATE TABLE member (
-    id INT PRIMARY KEY AUTO_INCREMENT,
+    id INT PRIMARY KEY,
     membership_id INT NOT NULL,
-    first_name VARCHAR(100) NOT NULL,
-    last_name VARCHAR(100) NOT NULL,
-    email VARCHAR(255) UNIQUE NOT NULL,
-    phone VARCHAR(20) UNIQUE NOT NULL,
     date_of_birth DATE NOT NULL,
     emergency_contact VARCHAR(255) NOT NULL,
     member_status ENUM('active', 'inactive', 'suspended') DEFAULT 'active',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (id) REFERENCES user(id) ON DELETE CASCADE,
     FOREIGN KEY (membership_id) REFERENCES membership(id) ON DELETE CASCADE
 );
 
@@ -101,16 +93,14 @@ CREATE TABLE equipment_records (
     FOREIGN KEY (staff_id) REFERENCES staff(id)
 );
 
--- 9. ATTENDANCE (Links Members/Guests and Staff)
+-- 9. ATTENDANCE (Links Users and Staff)
 CREATE TABLE attendance (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    member_id INT, -- Nullable because it might be a guest
-    guest_id INT,  -- Nullable because it might be a member
+    user_id INT NOT NULL,
     staff_id INT NOT NULL,
     check_in_time DATETIME NOT NULL,
     check_out_time DATETIME,
-    FOREIGN KEY (member_id) REFERENCES member(id),
-    FOREIGN KEY (guest_id) REFERENCES guest(id),
+    FOREIGN KEY (user_id) REFERENCES user(id),
     FOREIGN KEY (staff_id) REFERENCES staff(id)
 );
 
