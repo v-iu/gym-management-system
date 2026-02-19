@@ -1,42 +1,34 @@
-import { useState } from 'react'
-import HomePage from './pages/Homepage'
-import MembersPage from './pages/MembersPage'
-import StaffLoginPage from './pages/StaffLoginPage'
-import NotFoundPage from './pages/NotFoundPage'
-import Navbar from './components/Navbar'
-import gymBg from './assets/gym-bg.jpg'
-
+import { Routes, Route, Navigate } from 'react-router-dom';
+import Layout from './components/Layout';
+import DashboardPage from './pages/DashboardPage';
+import MembersPage from './pages/MembersPage';
+import MembershipsPage from './pages/MembershipsPage';
+import StaffPage from './pages/StaffPage';
+import GuestsPage from './pages/GuestsPage';
+import AttendancePage from './pages/AttendancePage';
+import EquipmentPage from './pages/EquipmentPage';
+import PaymentsPage from './pages/PaymentsPage';
+import TrainerServicesPage from './pages/TrainerServicesPage';
+import TrainerSessionsPage from './pages/TrainerSessionsPage';
 
 function App() {
-    const [currentPage, setCurrentPage] = useState("home");
-
-    const renderPage = () => {
-        switch (currentPage) {
-            case "home":
-            return <HomePage />
-            case "members":
-            return <MembersPage />
-            case "staff":
-            return <StaffLoginPage />
-            default:
-            return <NotFoundPage />
-        }
-    }
-
   return (
-    <div 
-      className="min-h-screen bg-[#0B0F0C] text-white antialiased bg-cover bg-no-repeat"
-      style={{ backgroundImage: `url(${gymBg})`}}    
-    >
-      <div className="bg-black/70 min-h-screen">
-        <Navbar currentPage={ currentPage } setCurrentPage={ setCurrentPage } />
-
-        <main>
-        { renderPage() }
-        </main>
-      </div>
-    </div>
+    <Routes>
+      <Route element={<Layout />}>
+        <Route path="/" element={<DashboardPage />} />
+        <Route path="/members" element={<MembersPage />} />
+        <Route path="/memberships" element={<MembershipsPage />} />
+        <Route path="/staff" element={<StaffPage />} />
+        <Route path="/guests" element={<GuestsPage />} />
+        <Route path="/attendance" element={<AttendancePage />} />
+        <Route path="/equipment" element={<EquipmentPage />} />
+        <Route path="/payments" element={<PaymentsPage />} />
+        <Route path="/trainer-services" element={<TrainerServicesPage />} />
+        <Route path="/trainer-sessions" element={<TrainerSessionsPage />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Route>
+    </Routes>
   );
 }
 
-export default App
+export default App;
