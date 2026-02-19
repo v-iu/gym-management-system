@@ -1,51 +1,70 @@
 export default function DataTable({ columns, data, loading, onRowAction, actionLabel = 'View' }) {
   if (loading) {
     return (
-      <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
-        <div className="animate-spin w-8 h-8 border-3 border-green-600 border-t-transparent rounded-full mx-auto mb-3" />
-        <p className="text-sm text-gray-500">Loading...</p>
+      <div className="rounded-xl
+                      bg-black/40 backdrop-blur-md
+                      border border-green-500/20
+                      p-12 text-center">
+        <div className="animate-spin w-8 h-8 border-3 border-green-500 border-t-transparent rounded-full mx-auto mb-4" />
+        <p className="text-green-400/70 text-sm">Loading...</p>
       </div>
     );
   }
 
   if (!data || data.length === 0) {
     return (
-      <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
-        <p className="text-gray-400 text-sm">No records found.</p>
+      <div className="rounded-xl
+                      bg-black/40 backdrop-blur-md
+                      border border-green-500/20
+                      p-12 text-center">
+        <p className="text-green-400/60 text-sm">No records found.</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+    <div className="rounded-xl overflow-hidden
+                    bg-black/40 backdrop-blur-md
+                    border border-green-500/20
+                    shadow-[0_0_25px_rgba(0,255,120,0.08)]">
+
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
+
           <thead>
-            <tr className="bg-gray-50 border-b border-gray-200">
+            <tr className="bg-black/60 border-b border-green-500/20">
               {columns.map((col) => (
                 <th
                   key={col.key}
-                  className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider"
+                  className="text-left px-6 py-4 text-xs font-semibold text-green-400 uppercase tracking-wider"
                 >
                   {col.label}
                 </th>
               ))}
-              {onRowAction && <th className="px-4 py-3" />}
+              {onRowAction && <th className="px-6 py-4" />}
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-100">
+
+          <tbody className="divide-y divide-green-500/10">
             {data.map((row, idx) => (
-              <tr key={row.id || idx} className="hover:bg-gray-50 transition-colors">
+              <tr
+                key={row.id || idx}
+                className="hover:bg-green-500/5 transition-all duration-200"
+              >
                 {columns.map((col) => (
-                  <td key={col.key} className="px-4 py-3 text-gray-700 whitespace-nowrap">
+                  <td
+                    key={col.key}
+                    className="px-6 py-4 text-gray-300 whitespace-nowrap"
+                  >
                     {col.render ? col.render(row) : row[col.key] ?? '—'}
                   </td>
                 ))}
+
                 {onRowAction && (
-                  <td className="px-4 py-3 text-right">
+                  <td className="px-6 py-4 text-right">
                     <button
                       onClick={() => onRowAction(row)}
-                      className="text-green-600 hover:text-green-700 text-xs font-medium"
+                      className="text-green-400 hover:text-green-300 text-xs font-medium"
                     >
                       {actionLabel}
                     </button>
@@ -54,8 +73,10 @@ export default function DataTable({ columns, data, loading, onRowAction, actionL
               </tr>
             ))}
           </tbody>
+
         </table>
       </div>
     </div>
   );
 }
+
