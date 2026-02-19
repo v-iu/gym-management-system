@@ -98,8 +98,11 @@ export default function AttendancePage() {
       <PageHeader title="Attendance" subtitle="Check in members &amp; guests" />
 
       {/* Check-in Form */}
-      <div className="bg-white rounded-xl border border-gray-200 p-5 mb-6">
-        <h3 className="text-sm font-semibold text-gray-800 mb-4">Quick Check-In</h3>
+      <div className="rounded-2xl p-6 mb-6 
+                      bg-black/40 backdrop-blur-md
+                      border border-green-400/20
+                      shadow-[0_0_25px_rgba(0,255,120,0.08)]">
+        <h3 className="text-sm font-semibold text-green-300 mb-4 tracking-wide">Quick Check-in</h3>
 
         {checkinMsg && (
           <div className={`mb-4 px-4 py-2.5 rounded-lg text-sm ${
@@ -182,7 +185,8 @@ export default function AttendancePage() {
       </div>
 
       {/* Today's Attendance Table */}
-      <h3 className="text-sm font-semibold text-gray-800 mb-3">Today's Attendance</h3>
+      <h3 className="text-sm font-semibold text-green-300 mb-3 tracking-wide">Today's Attendance</h3>
+
       <DataTable
         columns={columns}
         data={attendance}

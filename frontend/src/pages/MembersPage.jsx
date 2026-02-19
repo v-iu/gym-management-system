@@ -1,58 +1,90 @@
+const testMembers = []; 
+
 export default function MembersPage() {
   const getStatusColor = (status) => {
     switch (status) {
       case "active":
-        return "bg-green-600 text-green-100";
+        return "bg-green-500/20 text-green-400 border border-green-400/40 shadow-[0_0_8px_rgba(0,255,120,0.3)]";
       case "paused":
-        return "bg-yellow-500 text-yellow-900";
+        return "bg-amber-500/20 text-amber-400 border border-amber-400/40 shadow-[0_0_8px_rgba(255,200,0,0.3)]";
       case "inactive":
       case "suspended":
-        return "bg-red-600 text-red-100";
+        return "bg-rose-500/20 text-rose-400 border border-rose-400/40 shadow-[0_0_8px_rgba(255,100,120,0.3)]";
       default:
-        return "bg-gray-500 text-gray-100";
+        return "bg-gray-500/20 text-gray-300 border border-gray-400/40";
     }
   };
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-6 text-white">Gym Members</h1>
+    <div className="max-w-6xl mx-auto px-4 py-8 space-y-6">
 
-      <table className="min-w-full rounded-lg overflow-hidden bg-gray-800/30 backdrop-blur-sm shadow-lg">
-        <thead className="bg-gray-900/50 text-gray-300 text-left">
-          <tr>
-            <th className="px-4 py-2">Name</th>
-            <th className="px-4 py-2">Email</th>
-            <th className="px-4 py-2">Phone</th>
-            <th className="px-4 py-2">Membership</th>
-            <th className="px-4 py-2">Status</th>
-          </tr>
-        </thead>
+      <div>
+        <h1 className="text-3xl font-bold text-white tracking-wide">
+          Members
+        </h1>
+        <div className="inline-block mt-3
+                        px-4 py-2 rounded-xl
+                        bg-black/40 backdrop-blur-sm
+                        border border-green-400/20
+                        shadow-[0_0_15px_rgba(0,255,120,0.08)]">
+        <p className="text-base text-green-300 tracking-wide">
+        Manage and monitor all registered gym members
+        </p>
+        </div>
+      </div>
 
-        <tbody>
-          {testMembers.map((member) => (
-            <tr
-              key={member.id}
-              className="border-b border-gray-700 hover:bg-gray-800/50 transition-colors"
-            >
-              <td className="px-4 py-2 text-white">
-                {member.firstName} {member.lastName}
-              </td>
-              <td className="px-4 py-2 text-gray-300">{member.email}</td>
-              <td className="px-4 py-2 text-gray-300">{member.phone}</td>
-              <td className="px-4 py-2 text-gray-300">{member.membershipType}</td>
-              <td className="px-4 py-2">
-                <span
-                  className={`px-2 py-1 rounded-full text-sm font-semibold ${getStatusColor(
-                    member.membershipStatus
-                  )}`}
-                >
-                  {member.membershipStatus}
-                </span>
-              </td>
+      <div className="rounded-xl overflow-hidden
+                      bg-black/40 backdrop-blur-md
+                      border border-green-500/20
+                      shadow-[0_0_25px_rgba(0,255,120,0.08)]">
+
+        <table className="min-w-full text-sm">
+
+          {/* Table Head */}
+          <thead className="bg-black/60 text-green-400 uppercase text-xs tracking-wider">
+            <tr>
+              <th className="px-6 py-4 text-left">Name</th>
+              <th className="px-6 py-4 text-left">Email</th>
+              <th className="px-6 py-4 text-left">Phone</th>
+              <th className="px-6 py-4 text-left">Membership</th>
+              <th className="px-6 py-4 text-left">Status</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+
+          {/* Table Body */}
+          <tbody className="divide-y divide-green-500/10">
+            {testMembers.map((member) => (
+              <tr
+                key={member.id}
+                className="hover:bg-green-500/5 transition-all duration-200"
+              >
+                <td className="px-6 py-4 text-white font-medium">
+                  {member.firstName} {member.lastName}
+                </td>
+                <td className="px-6 py-4 text-gray-300">
+                  {member.email}
+                </td>
+                <td className="px-6 py-4 text-gray-300">
+                  {member.phone}
+                </td>
+                <td className="px-6 py-4 text-gray-300">
+                  {member.membershipType}
+                </td>
+                <td className="px-6 py-4">
+                  <span
+                    className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(
+                      member.membershipStatus
+                    )}`}
+                  >
+                    {member.membershipStatus}
+                  </span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+
+        </table>
+      </div>
     </div>
   );
 }

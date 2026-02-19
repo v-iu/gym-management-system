@@ -1,7 +1,14 @@
 @import "tailwindcss";
 
 body {
-    background-color: #f9fafb;
-    color: #1f2937;
-    font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+  @apply bg-black text-white;
+  background-image: url('./assets/gym-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
+
+a, button {
+  @apply transition-all duration-200;
+}
+
