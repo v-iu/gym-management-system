@@ -1,5 +1,3 @@
-import { testMembers } from "../data/members";
-
 export default function MembersPage() {
   const getStatusColor = (status) => {
     switch (status) {
