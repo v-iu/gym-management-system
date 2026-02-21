@@ -1,7 +1,7 @@
   <?php
 
 class App{
-    protected $controller = 'Members'; //default controller
+    protected $controller = 'Dashboard'; //default controller
     protected $method = 'index'; //default method
     protected $params = []; //args/url parameters
 
