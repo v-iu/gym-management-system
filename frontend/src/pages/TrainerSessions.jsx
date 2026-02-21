@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { api } from '../api';
-import PageHeader from '../components/PageHeader';
-import DataTable from '../components/DataTable';
-import Modal from '../components/Modal';
+import PageHeader from '../components/common/PageHeader';
+import DataTable from '../components/common/DataTable';
+import Modal from '../components/common/Modal';
 
-export default function TrainerSessionsPage() {
+export default function TrainerSessions() {
   const [sessions, setSessions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
