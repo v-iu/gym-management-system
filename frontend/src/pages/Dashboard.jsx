@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { api } from '../api';
-import StatCard from '../components/StatCard';
+import StatCard from '../components/common/StatCard';
 import { Users, UserCog, CreditCard, ClipboardCheck, Receipt, Dumbbell } from 'lucide-react';
 
 export default function DashboardPage() {

@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { api } from '../api';
-import PageHeader from '../components/PageHeader';
-import DataTable from '../components/DataTable';
-import Modal from '../components/Modal';
+import PageHeader from '../components/common/PageHeader';
+import DataTable from '../components/common/DataTable';
+import Modal from '../components/common/Modal';
 
 export default function EquipmentPage() {
   const [equipment, setEquipment] = useState([]);
