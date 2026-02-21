@@ -10,12 +10,12 @@ class Dashboard extends Controller {
     public function index(){
         $this->requireMethod('GET');
 
-        // Total members
-        $this->db->query("SELECT COUNT(*) AS total FROM member");
+        // Total members (stored in `user` with role = 'member')
+        $this->db->query("SELECT COUNT(*) AS total FROM user WHERE role = 'member'");
         $totalMembers = $this->db->single()->total;
 
-        // Total staff
-        $this->db->query("SELECT COUNT(*) AS total FROM staff");
+        // Total staff (stored in `user` with role = 'staff')
+        $this->db->query("SELECT COUNT(*) AS total FROM user WHERE role = 'staff'");
         $totalStaff = $this->db->single()->total;
 
         // Active memberships
