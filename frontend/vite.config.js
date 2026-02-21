@@ -13,7 +13,11 @@ export default defineConfig({
       '/api': {
         target: 'http://localhost',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, '/gym-management-system/public'),
+        // Rewrite `/api/Users/index` -> `/gym-management-system/public/index.php?url=Users/index`
+        rewrite: (path) => path.replace(/^\/api\/?(.*)/, (_match, p1) => {
+          if (p1 && p1.length) return `/gym-management-system/public/index.php?url=${p1}`;
+          return '/gym-management-system/public/index.php';
+        }),
       }
     }
   }

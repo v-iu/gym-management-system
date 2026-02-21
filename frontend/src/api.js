@@ -19,6 +19,7 @@ async function request(endpoint, options = {}) {
 // Convert an object to URLSearchParams (form-encoded)
 function toFormData(obj) {
   const params = new URLSearchParams();
+  if (!obj) return params;
   for (const [key, value] of Object.entries(obj)) {
     params.append(key, value);
   }
@@ -55,4 +56,3 @@ export const api = {
 //
 // Check in:
 //   api.post('attendances/checkInOut', { email: 'john@example.com', action: 'checkin' })
-
