@@ -14,15 +14,13 @@ import {
 
 const navItems = [
   { to: '/',                icon: LayoutDashboard, label: 'Dashboard' },
-  { to: '/members',         icon: Users,           label: 'Members' },
-  { to: '/memberships',     icon: CreditCard,      label: 'Memberships' },
-  { to: '/staff',           icon: UserCog,         label: 'Staff' },
-  { to: '/guests',          icon: UserPlus,        label: 'Guests' },
-  { to: '/attendance',      icon: ClipboardCheck,  label: 'Attendance' },
-  { to: '/equipment',       icon: Dumbbell,        label: 'Equipment' },
-  { to: '/payments',        icon: Receipt,         label: 'Payments' },
-  { to: '/trainer-services', icon: BookOpen,       label: 'Trainer Services' },
-  { to: '/trainer-sessions', icon: CalendarDays,   label: 'Trainer Sessions' },
+  { to: '/memberships',    icon: CreditCard,      label: 'Memberships' },
+  { to: '/users',         icon: UserPlus,        label: 'Users' },
+  { to: '/attendance',     icon: ClipboardCheck,  label: 'Attendance' },
+  { to: '/equipment',      icon: Dumbbell,        label: 'Equipment' },
+  { to: '/payments',       icon: Receipt,         label: 'Payments' },
+  { to: '/trainer-services', icon: BookOpen,      label: 'Trainer Services' },
+  { to: '/trainer-sessions', icon: CalendarDays,  label: 'Trainer Sessions' },
 ];
 
 export default function Sidebar({ isOpen, onClose }) {
