@@ -41,7 +41,7 @@ class EquipmentRecord{
     public function getRecords(){
         $this->db->query("SELECT r.*, e.name AS name, s.first_name AS staff_fname, s.last_name AS staff_lname FROM equipment_records r
         LEFT JOIN equipment e ON r.equipment_id = e.id
-        LEFT JOIN staff s ON r.staff_id = s.id
+        LEFT JOIN user s ON r.staff_id = s.id
         ORDER BY e.name DESC");
         return $this->db->resultSet();
     }

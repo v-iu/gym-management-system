@@ -58,12 +58,11 @@ class Attendance {
 //getAttendance - all attendance logs with joined names
     public function getAttendance(){
         $this->db->query("SELECT a.id, a.user_id, a.staff_id, a.check_in_time, a.check_out_time,
-                          u.first_name AS user_first_name, u.last_name AS user_last_name, u.type AS user_type,
-                          s_user.first_name AS staff_first_name, s_user.last_name AS staff_last_name
+                          u.first_name AS user_first_name, u.last_name AS user_last_name, u.role AS user_role,
+                          s.first_name AS staff_first_name, s.last_name AS staff_last_name
                           FROM attendance a 
                           JOIN user u ON a.user_id = u.id 
-                          JOIN staff s ON a.staff_id = s.id 
-                          JOIN user s_user ON s.id = s_user.id
+                          LEFT JOIN user s ON a.staff_id = s.id 
                           ORDER BY a.check_in_time DESC");
         return $this->db->resultSet();
     }
@@ -74,16 +73,36 @@ class Attendance {
         $today = date('Y-m-d');
 
         $this->db->query("SELECT a.id, a.user_id, a.staff_id, a.check_in_time, a.check_out_time,
-                          u.first_name AS user_first_name, u.last_name AS user_last_name, u.type AS user_type,
-                          s_user.first_name AS staff_first_name, s_user.last_name AS staff_last_name
+                          u.first_name AS user_first_name, u.last_name AS user_last_name, u.role AS user_role,
+                          s.first_name AS staff_first_name, s.last_name AS staff_last_name
                           FROM attendance a 
                           JOIN user u ON a.user_id = u.id 
-                          JOIN staff s ON a.staff_id = s.id 
-                          JOIN user s_user ON s.id = s_user.id
+                          LEFT JOIN user s ON a.staff_id = s.id 
                           WHERE DATE(a.check_in_time) = :today
                           ORDER BY a.check_in_time DESC");
         $this->db->bind(':today', $today);
         return $this->db->resultSet();
+    }
+
+    // Get attendance for a specific date (YYYY-MM-DD)
+    public function getByDate($date){
+        $this->db->query("SELECT a.id, a.user_id, a.staff_id, a.check_in_time, a.check_out_time,
+                          u.first_name AS user_first_name, u.last_name AS user_last_name, u.role AS user_role,
+                          s.first_name AS staff_first_name, s.last_name AS staff_last_name
+                          FROM attendance a 
+                          JOIN user u ON a.user_id = u.id 
+                          LEFT JOIN user s ON a.staff_id = s.id 
+                          WHERE DATE(a.check_in_time) = :date
+                          ORDER BY a.check_in_time DESC");
+        $this->db->bind(':date', $date);
+        return $this->db->resultSet();
+    }
+
+    // Return list of distinct dates that have attendance records (YYYY-MM-DD)
+    public function getAvailableDates(){
+        $this->db->query("SELECT DISTINCT DATE(check_in_time) AS day FROM attendance ORDER BY day DESC");
+        $rows = $this->db->resultSet();
+        return array_map(function($r){ return $r->day; }, $rows);
     }
 
 //todayCount - count of check-ins today (for dashboard)

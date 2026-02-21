@@ -22,7 +22,10 @@ class Database{
         $this->dbh = new PDO($dsn, $this->user, $this->pass, $options);
         } catch (PDOException $e){
             $this->error = $e->getMessage();
-            echo $this->error;
+            header('Content-Type: application/json');
+            http_response_code(500);
+            echo json_encode(['success' => false, 'message' => 'Database connection failed: ' . $this->error]);
+            exit;
         }
     }
     
@@ -64,7 +67,26 @@ class Database{
         $this->execute();
         return $this->stmt->fetch(PDO::FETCH_OBJ);
     }
+
+    // number of rows returned/affected by the last statement
     public function rowCount() {
         return $this->stmt->rowCount();
+    }
+
+    // Convenience wrappers for PDO functionality used by models
+    public function lastInsertId() {
+        return $this->dbh->lastInsertId();
+    }
+
+    public function beginTransaction() {
+        return $this->dbh->beginTransaction();
+    }
+
+    public function commit() {
+        return $this->dbh->commit();
+    }
+
+    public function rollBack() {
+        return $this->dbh->rollBack();
     }
 }
