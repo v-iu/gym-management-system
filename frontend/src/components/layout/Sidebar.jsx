@@ -14,10 +14,8 @@ import {
 
 const navItems = [
   { to: '/',                icon: LayoutDashboard, label: 'Dashboard' },
-  { to: '/members',        icon: Users,           label: 'Members' },
   { to: '/memberships',    icon: CreditCard,      label: 'Memberships' },
-  { to: '/staff',          icon: UserCog,         label: 'Staff' },
-  { to: '/guests',         icon: UserPlus,        label: 'Guests' },
+  { to: '/users',         icon: UserPlus,        label: 'Users' },
   { to: '/attendance',     icon: ClipboardCheck,  label: 'Attendance' },
   { to: '/equipment',      icon: Dumbbell,        label: 'Equipment' },
   { to: '/payments',       icon: Receipt,         label: 'Payments' },
