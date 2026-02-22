@@ -28,6 +28,14 @@ const userService = {
 
   remove: async (id) => {
     return api.delete(`${BASE}/destroy/${id}`);
+  },
+
+  suspend: async (id) => {
+    return api.post(`${BASE}/suspend/${id}`);
+  },
+
+  activate: async (id) => {
+    return api.post(`${BASE}/activate/${id}`);
   }
 };
 

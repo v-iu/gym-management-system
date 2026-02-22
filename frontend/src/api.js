@@ -8,7 +8,7 @@ async function request(endpoint, options = {}) {
   const data = await response.json();
 
   if (!response.ok) {
-    const error = new Error(data.error || 'Request failed');
+    const error = new Error(data.message || data.error || 'Request failed');
     error.status = response.status;
     error.data = data;
     throw error;

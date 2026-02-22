@@ -37,6 +37,36 @@ class Dashboard extends Controller {
         $this->db->query("SELECT COUNT(*) AS total FROM equipment");
         $totalEquipment = $this->db->single()->total;
 
+        // Revenue Chart Data (Last 6 Months)
+        $revenueChart = [];
+        for ($i = 5; $i >= 0; $i--) {
+            $monthStart = date('Y-m-01', strtotime("-$i months"));
+            $monthEnd = date('Y-m-t', strtotime("-$i months"));
+            $label = date('M', strtotime("-$i months"));
+            
+            $this->db->query("SELECT COALESCE(SUM(amount), 0) AS total FROM payment WHERE is_paid = 1 AND payment_date BETWEEN :start AND :end");
+            $this->db->bind(':start', $monthStart . ' 00:00:00');
+            $this->db->bind(':end', $monthEnd . ' 23:59:59');
+            $revenueChart[] = [
+                'name' => $label,
+                'total' => (float) $this->db->single()->total
+            ];
+        }
+
+        // Attendance Chart Data (Last 7 Days)
+        $attendanceChart = [];
+        for ($i = 6; $i >= 0; $i--) {
+            $date = date('Y-m-d', strtotime("-$i days"));
+            $label = date('D', strtotime("-$i days"));
+
+            $this->db->query("SELECT COUNT(*) AS total FROM attendance WHERE DATE(check_in_time) = :date");
+            $this->db->bind(':date', $date);
+            $attendanceChart[] = [
+                'name' => $label,
+                'total' => (int) $this->db->single()->total
+            ];
+        }
+
         $this->json([
             'success' => true,
             'data' => [
@@ -46,6 +76,8 @@ class Dashboard extends Controller {
                 'today_attendance'   => (int) $todayAttendance,
                 'total_revenue'      => (float) $totalRevenue,
                 'total_equipment'    => (int) $totalEquipment,
+                'revenue_chart'      => $revenueChart,
+                'attendance_chart'   => $attendanceChart,
             ]
         ]);
     }

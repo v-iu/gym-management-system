@@ -149,4 +149,12 @@ class User{
         $row = $this->db->single();
         return $row ? true : false;
     }
+
+    // Update user suspension status
+    public function updateStatus($id, $isSuspended) {
+        $this->db->query("UPDATE `user` SET is_suspended = :is_suspended WHERE id = :id");
+        $this->db->bind(':is_suspended', $isSuspended);
+        $this->db->bind(':id', $id);
+        return $this->db->execute();
+    }
 }

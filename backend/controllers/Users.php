@@ -26,6 +26,12 @@ class Users extends Controller {
             $loggedInUser = $this->userModel->login($email, $password);
             
             if($loggedInUser){
+                // Ensure only staff can login to the admin panel
+                if ($loggedInUser->role !== 'staff') {
+                    $this->error('Access denied. Only staff members can log in.', 403);
+                    return;
+                }
+
                 // Create session
                 $_SESSION['user_id'] = $loggedInUser->id;
                 $_SESSION['user_email'] = $loggedInUser->email;
@@ -207,6 +213,30 @@ class Users extends Controller {
             $this->json(['success' => true, 'message' => 'User deleted successfully']);
         } else {
             $this->error('Something went wrong (possible foreign key constraint)', 500);
+        }
+    }
+
+    // POST - suspend user
+    public function suspend($id = null){
+        $this->requireMethod('POST');
+        if (!$id) $this->error('ID required', 400);
+
+        if ($this->userModel->updateStatus($id, 1)) {
+            $this->json(['success' => true, 'message' => 'User suspended successfully']);
+        } else {
+            $this->error('Failed to suspend user', 500);
+        }
+    }
+
+    // POST - activate user
+    public function activate($id = null){
+        $this->requireMethod('POST');
+        if (!$id) $this->error('ID required', 400);
+
+        if ($this->userModel->updateStatus($id, 0)) {
+            $this->json(['success' => true, 'message' => 'User activated successfully']);
+        } else {
+            $this->error('Failed to activate user', 500);
         }
     }
 }
