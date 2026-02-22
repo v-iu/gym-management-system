@@ -61,9 +61,10 @@ class Payment{
 
 //look for specific payment transaction
     public function getById($id){
-        $this->db->query("SELECT p.*, m.membership_type AS membership_type, u.first_name AS user_fname, u.last_name AS user_lname FROM payment p
+        $this->db->query("SELECT p.*, m.membership_type AS membership_type, u.first_name AS user_first_name, u.last_name AS user_last_name, s.first_name AS staff_first_name, s.last_name AS staff_last_name FROM payment p
         LEFT JOIN membership m ON p.membership_id = m.id
         LEFT JOIN user u ON p.user_id = u.id
+        LEFT JOIN user s ON p.staff_id = s.id
         WHERE id = :id");
         $this->db->bind(':id', $id);
         $row = $this->db->single();
@@ -76,7 +77,7 @@ class Payment{
     }
 
     public function getAll(){
-        $this->db->query("SELECT p.*, m.membership_type AS membership_type, u.first_name AS user_fname, u.last_name AS user_lname, s.first_name AS staff_fname, s.last_name AS staff_lname FROM payment p
+        $this->db->query("SELECT p.*, m.membership_type AS membership_type, u.first_name AS user_first_name, u.last_name AS user_last_name, s.first_name AS staff_first_name, s.last_name AS staff_last_name FROM payment p
         LEFT JOIN membership m ON p.membership_id = m.id
         LEFT JOIN user u ON p.user_id = u.id
         LEFT JOIN user s ON p.staff_id = s.id
