@@ -1,10 +1,10 @@
 <?php
 
 class Database{
-    private $host = DB_HOST;
-    private $user = DB_USER;
-    private $pass = DB_PASS;
-    private $dbName = DB_NAME;
+    private $host = 'localhost';
+    private $user = 'root';
+    private $pass = '';
+    private $dbName = 'gym_management';
     
     private $dbh; //handler
     private $stmt;
