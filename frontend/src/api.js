@@ -2,6 +2,7 @@ const API_BASE = '/api';
 
 async function request(endpoint, options = {}) {
   const url = `${API_BASE}/${endpoint}`;
+  options.credentials = 'include';
 
   const response = await fetch(url, options);
   const data = await response.json();
