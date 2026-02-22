@@ -10,6 +10,56 @@ class Users extends Controller {
         $this->json(['success' => true, 'data' => $users]);
     }
 
+    // Login user
+    public function login(){
+        if($_SERVER['REQUEST_METHOD'] == 'POST'){
+            $data = $this->getRequestBody();
+            
+            $email = $data['email'] ?? '';
+            $password = $data['password'] ?? '';
+            
+            if(empty($email) || empty($password)){
+                $this->error('Please enter email and password', 400);
+                return;
+            }
+
+            $loggedInUser = $this->userModel->login($email, $password);
+            
+            if($loggedInUser){
+                // Create session
+                $_SESSION['user_id'] = $loggedInUser->id;
+                $_SESSION['user_email'] = $loggedInUser->email;
+                $_SESSION['user_role'] = $loggedInUser->role;
+                $_SESSION['user_name'] = $loggedInUser->first_name . ' ' . $loggedInUser->last_name;
+
+                $this->json([
+                    'success' => true,
+                    'message' => 'Logged in successfully',
+                    'user' => [
+                        'id' => $loggedInUser->id,
+                        'name' => $loggedInUser->first_name . ' ' . $loggedInUser->last_name,
+                        'email' => $loggedInUser->email,
+                        'role' => $loggedInUser->role
+                    ]
+                ]);
+            } else {
+                $this->error('Password or email is incorrect', 401);
+            }
+        } else {
+            $this->error('Method not allowed', 405);
+        }
+    }
+
+    // Logout user
+    public function logout(){
+        unset($_SESSION['user_id']);
+        unset($_SESSION['user_email']);
+        unset($_SESSION['user_role']);
+        unset($_SESSION['user_name']);
+        session_destroy();
+        $this->json(['success' => true, 'message' => 'Logged out']);
+    }
+
 //register a user
     public function register(){
         if($_SERVER['REQUEST_METHOD'] == 'POST'){
