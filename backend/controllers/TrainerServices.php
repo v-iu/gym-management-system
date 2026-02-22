@@ -7,7 +7,7 @@ class TrainerServices extends Controller {
     // GET - List all services
     public function index(){
         $this->requireMethod('GET');
-        $services = $this->serviceModel->getAll();
+        $services = $this->serviceModel->getTrainerService(); // matches model method
         $this->json(['success' => true, 'data' => $services]);
     }
 
@@ -36,7 +36,8 @@ class TrainerServices extends Controller {
             $this->json(['success' => false, 'errors' => $errors], 422);
         }
 
-        if ($this->serviceModel->create($data)) {
+        // ✅ Use the correct model function
+        if ($this->serviceModel->addService($data)) {
             $this->json(['success' => true, 'message' => 'Service created successfully'], 201);
         } else {
             $this->error('Something went wrong', 500);
@@ -49,7 +50,7 @@ class TrainerServices extends Controller {
         if (!$id) $this->error('ID required', 400);
 
         $data = $this->getRequestBody();
-        if ($this->serviceModel->update($id, $data)) {
+        if ($this->serviceModel->updateService($data)) { // make sure this matches model
             $this->json(['success' => true, 'message' => 'Service updated successfully']);
         } else {
             $this->error('Something went wrong', 500);
