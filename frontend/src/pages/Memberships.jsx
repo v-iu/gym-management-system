@@ -15,6 +15,8 @@ export default function MembershipsPage() {
   
   const [showModal, setShowModal] = useState(false);
   const [renewingMembership, setRenewingMembership] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
 
   // Users who can be assigned a membership (guests or existing members).
   // This covers "Add new member (Query:Guests)" use case.
@@ -34,6 +36,13 @@ export default function MembershipsPage() {
     }
   };
 
+  const filteredMemberships = memberships.filter(m => {
+    const matchesSearch = m.first_name?.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                          m.last_name?.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesStatus = statusFilter === 'all' || m.membership_status === statusFilter;
+    return matchesSearch && matchesStatus;
+  });
+
   const columns = [
     { key: 'id', label: 'ID' },
     { key: 'member', label: 'Member', render: (row) => row.first_name ? `${row.first_name} ${row.last_name}` : '—' },
@@ -48,28 +57,28 @@ export default function MembershipsPage() {
         return diffDays > 0 ? `${diffDays} days` : 'Expired';
     }},
     { key: 'membership_status', label: 'Status', render: (row) => (
-      <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${
-        row.membership_status === 'active' ? 'bg-green-100 text-green-700' :
-        row.membership_status === 'paused' ? 'bg-amber-100 text-amber-700' :
-        row.membership_status === 'expired' ? 'bg-gray-100 text-gray-600' :
-        'bg-red-100 text-red-700'
+      <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium border ${
+        row.membership_status === 'active' ? 'bg-green-500/20 text-green-400 border-green-500/30' :
+        row.membership_status === 'paused' ? 'bg-amber-500/20 text-amber-400 border-amber-500/30' :
+        row.membership_status === 'expired' ? 'bg-gray-500/20 text-gray-400 border-gray-500/30' :
+        'bg-red-500/20 text-red-400 border-red-500/30'
       }`}>
         {row.membership_status}
       </span>
     )},
-    { key: 'actions', label: 'Actions', render: (row) => (
+    { key: 'actions', label: 'Actions', align: 'right', render: (row) => (
       <div className="flex gap-2 justify-end">
         {(row.membership_status === 'active' || row.membership_status === 'paused') && (
           <button 
             onClick={() => handlePauseResume(row)}
-            className="text-xs text-amber-600 hover:text-amber-700 font-medium"
+            className="px-2 py-1 text-xs rounded bg-amber-500/20 text-amber-400 border border-amber-500/30 hover:bg-amber-500/30 font-medium transition-colors"
           >
             {row.membership_status === 'active' ? 'Pause' : 'Resume'}
           </button>
         )}
         <button 
           onClick={() => setRenewingMembership(row)}
-          className="text-xs text-blue-600 hover:text-blue-700 font-medium"
+          className="px-2 py-1 text-xs rounded bg-blue-500/20 text-blue-400 border border-blue-500/30 hover:bg-blue-500/30 font-medium transition-colors"
         >
           Pay Early / Renew
         </button>
@@ -86,12 +95,32 @@ export default function MembershipsPage() {
         onAction={() => setShowModal(true)}
       />
 
-      <DataTable columns={columns} data={memberships} loading={loading} />
+      <div className="mb-6 flex flex-col sm:flex-row gap-4">
+        <input
+          type="text"
+          placeholder="Search memberships by member name..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="w-full max-w-md px-4 py-2 bg-black/40 border border-green-500/20 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-green-500/50 focus:ring-1 focus:ring-green-500/50 transition-all"
+        />
+        <select
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value)}
+          className="px-4 py-2 bg-black/40 border border-green-500/20 rounded-xl text-white focus:outline-none focus:border-green-500/50 focus:ring-1 focus:ring-green-500/50 transition-all [&>option]:bg-zinc-900"
+        >
+          <option value="all">All Statuses</option>
+          <option value="active">Active</option>
+          <option value="paused">Paused</option>
+          <option value="expired">Expired</option>
+          <option value="cancelled">Cancelled</option>
+        </select>
+      </div>
+
+      <DataTable columns={columns} data={filteredMemberships} loading={loading} />
 
       <Modal isOpen={showModal} onClose={() => setShowModal(false)} title="Create Membership">
         <MembershipApplicationForm 
           membersList={potentialMembers}
-          staffList={staff}
           onCancel={() => setShowModal(false)}
           onSubmit={async (payload) => {
             await create(payload);
@@ -106,7 +135,6 @@ export default function MembershipsPage() {
           <MembershipRenewalForm
             membership={renewingMembership}
             member={{ first_name: renewingMembership.first_name, last_name: renewingMembership.last_name }}
-            staffList={staff}
             onCancel={() => setRenewingMembership(null)}
             onSubmit={async (payload) => {
               await membershipService.renew(renewingMembership.id, payload);
