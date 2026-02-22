@@ -55,31 +55,57 @@ export default function TrainerSessions() {
       />
 
       <DataTable columns={columns} data={sessions} loading={loading} />
-
-      <Modal isOpen={showModal} onClose={() => setShowModal(false)} title="Schedule Session">
-        <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); }}>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Member ID</label>
-            <input type="number" name="member_id" className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Trainer (Staff ID)</label>
-            <input type="number" name="staff_id" className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Service ID</label>
-            <input type="number" name="service_id" className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Session Date &amp; Time</label>
-            <input type="datetime-local" name="session_date" className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500" />
-          </div>
-          <div className="flex justify-end gap-3 pt-2">
-            <button type="button" onClick={() => setShowModal(false)} className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800">Cancel</button>
-            <button type="submit" className="px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700">Schedule</button>
-          </div>
-        </form>
-      </Modal>
+    <Modal isOpen={showModal} onClose={() => setShowModal(false)} title="Schedule Session">
+      <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); }}>
+        <div>
+          <label className="block text-sm font-medium text-gray-800 mb-1">Member ID</label>
+          <input
+            type="number"
+            name="member_id"
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 focus:ring-2 focus:ring-green-500 focus:border-green-500"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-800 mb-1">Trainer (Staff ID)</label>
+          <input
+            type="number"
+            name="staff_id"
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 focus:ring-2 focus:ring-green-500 focus:border-green-500"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-800 mb-1">Service ID</label>
+          <input
+            type="number"
+            name="service_id"
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 focus:ring-2 focus:ring-green-500 focus:border-green-500"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-800 mb-1">Session Date &amp; Time</label>
+          <input
+            type="datetime-local"
+            name="session_date"
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 focus:ring-2 focus:ring-green-500 focus:border-green-500"
+          />
+        </div>
+        <div className="flex justify-end gap-3 pt-2">
+          <button
+            type="button"
+            onClick={() => setShowModal(false)}
+            className="px-4 py-2 text-sm text-gray-800 hover:text-gray-900"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            className="px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700"
+          >
+            Schedule
+          </button>
+        </div>
+      </form>
+    </Modal>
     </div>
   );
 }

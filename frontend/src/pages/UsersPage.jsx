@@ -86,10 +86,20 @@ export default function UsersPage() {
     )},
     { key: 'created_at', label: 'Registered' },
     { key: 'actions', label: 'Actions', render: (row) => (
-      <div className="flex gap-3 justify-end">
-        <button onClick={() => handleEdit(row)} className="text-xs text-blue-600 hover:text-blue-700">Edit</button>
-        <button onClick={() => handleDelete(row.id)} className="text-xs text-red-600 hover:text-red-700">Delete</button>
-      </div>
+<div className="flex gap-2 justify-end">
+  <button 
+    onClick={() => handleEdit(row)} 
+    className="px-2 py-1 text-xs text-blue-700 bg-blue-100 rounded hover:bg-blue-200 font-medium transition-colors"
+  >
+    Edit
+  </button>
+  <button 
+    onClick={() => handleDelete(row.id)} 
+    className="px-2 py-1 text-xs text-red-700 bg-red-100 rounded hover:bg-red-200 font-medium transition-colors"
+  >
+    Delete
+  </button>
+</div>
     )}
   ];
 

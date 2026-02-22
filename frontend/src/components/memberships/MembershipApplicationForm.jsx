@@ -21,7 +21,6 @@ export default function MembershipApplicationForm({ member, membersList = [], st
     }
   }, [staffList, staffId]);
 
-  // Auto-update amount based on selected plan
   useEffect(() => {
     if (type === '30-day') setAmount(1500.00);
     else if (type === '90-day') setAmount(4000.00);
@@ -67,6 +66,8 @@ export default function MembershipApplicationForm({ member, membersList = [], st
 
   const change = method === 'cash' && tendered ? (parseFloat(tendered) - amount).toFixed(2) : '0.00';
 
+  const inputClass = "w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-green-500 focus:border-green-500";
+
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       {error && <div className="bg-red-50 text-red-600 p-3 rounded text-sm">{error}</div>}
@@ -79,7 +80,7 @@ export default function MembershipApplicationForm({ member, membersList = [], st
           <select 
             value={selectedMemberId} 
             onChange={e => setSelectedMemberId(e.target.value)}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
+            className={inputClass}
           >
             <option value="">— Select User —</option>
             {membersList.map(m => (
@@ -95,7 +96,7 @@ export default function MembershipApplicationForm({ member, membersList = [], st
           <select 
             value={type} 
             onChange={e => setType(e.target.value)}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
+            className={inputClass}
           >
             <option value="30-day">30-Day (₱1,500)</option>
             <option value="90-day">90-Day (₱4,000)</option>
@@ -108,7 +109,7 @@ export default function MembershipApplicationForm({ member, membersList = [], st
             type="date" 
             value={startDate} 
             onChange={e => setStartDate(e.target.value)}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
+            className={inputClass}
           />
         </div>
       </div>
@@ -120,7 +121,7 @@ export default function MembershipApplicationForm({ member, membersList = [], st
             type="number" 
             value={amount} 
             onChange={e => setAmount(parseFloat(e.target.value))}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
+            className={inputClass}
             step="0.01"
           />
         </div>
@@ -129,7 +130,7 @@ export default function MembershipApplicationForm({ member, membersList = [], st
           <select 
             value={method} 
             onChange={e => setMethod(e.target.value)}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
+            className={inputClass}
           >
             <option value="cash">Cash</option>
             <option value="gcash">GCash</option>
@@ -145,7 +146,7 @@ export default function MembershipApplicationForm({ member, membersList = [], st
             type="number" 
             value={tendered} 
             onChange={e => setTendered(e.target.value)}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
+            className={inputClass}
             step="0.01"
             placeholder="Amount received"
           />
@@ -158,7 +159,7 @@ export default function MembershipApplicationForm({ member, membersList = [], st
         <select 
           value={staffId} 
           onChange={e => setStaffId(e.target.value)}
-          className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
+          className={inputClass}
         >
           {staffList.map(s => (
             <option key={s.id} value={s.id}>{s.first_name} {s.last_name}</option>
