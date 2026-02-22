@@ -52,7 +52,7 @@ class TrainerSession{
     }
 //get all logs of trainer sessions
     public function getAll(){
-        $this->db->query("SELECT t.*, m.first_name AS member_first_name, m.last_name AS member_last_name, s.first_name AS staff_first_name, s.last_name AS staff_last_name, ts.service_name AS service_name FROM trainer_session t 
+        $this->db->query("SELECT t.*, m.first_name AS member_fname, m.last_name AS member_lname, s.first_name AS staff_fname, s.last_name AS staff_lname, ts.service_name AS service_name FROM trainer_session t 
         LEFT JOIN user m ON t.member_id = m.id
         LEFT JOIN user s ON t.staff_id = s.id
         LEFT JOIN trainer_service ts ON t.service_id = ts.id
