@@ -107,7 +107,6 @@ export default function AttendancePage() {
         {paymentGuest && (
           <GuestPaymentForm
             guest={paymentGuest}
-            staffList={staff}
             onCancel={() => { setShowPaymentModal(false); setPendingGuestId(null); }}
             onSubmit={async (payload) => {
               await paymentService.create(payload);
@@ -117,8 +116,7 @@ export default function AttendancePage() {
                 const uid = paymentGuest.id;
                 await checkin({ 
                   role: 'guest', 
-                  user_id: Number.isNaN(uid) ? undefined : uid, 
-                  staff_id: payload.staff_id ? parseInt(payload.staff_id, 10) : undefined 
+                  user_id: Number.isNaN(uid) ? undefined : uid
                 });
                 setCheckinMsg({ type: 'success', text: 'Payment recorded and checked in' });
               } catch (err) {

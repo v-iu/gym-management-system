@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { api } from '../api';
 import StatCard from '../components/common/StatCard';
 import { Users, UserCog, CreditCard, ClipboardCheck, Receipt, Dumbbell } from 'lucide-react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
 
 export default function DashboardPage() {
   const [stats, setStats] = useState(null);
@@ -45,10 +46,7 @@ export default function DashboardPage() {
       <div>
         <h1 className="text-3xl font-bold text-white tracking-wide">Dashboard</h1>
         <div className="inline-block mt-3
-                        px-4 py-2 rounded-xl
-                        bg-black/40 backdrop-blur-sm
-                        border border-green-400/20
-                        shadow-[0_0_15px_rgba(0,255,120,0.08)]">
+                        px-4 py-2 rounded-xl bg-black/60 backdrop-blur-xl border border-green-500/20 shadow-sm">
         <p className="text-base text-green-300 tracking-wide">
         Overview of your gym operations
         </p>
@@ -65,7 +63,40 @@ export default function DashboardPage() {
           />
         ))}
       </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Revenue Chart */}
+        <div className="p-6 rounded-xl bg-black/60 backdrop-blur-xl border border-green-500/20 shadow-sm">
+          <h3 className="text-lg font-semibold text-white mb-4">Revenue (Last 6 Months)</h3>
+          <div className="h-80">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={stats?.revenue_chart || []}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#333" />
+                <XAxis dataKey="name" stroke="#9ca3af" />
+                <YAxis stroke="#9ca3af" />
+                <Tooltip contentStyle={{ backgroundColor: '#18181b', borderColor: '#22c55e', color: '#fff' }} />
+                <Bar dataKey="total" fill="#22c55e" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        {/* Attendance Chart */}
+        <div className="p-6 rounded-xl bg-black/60 backdrop-blur-xl border border-green-500/20 shadow-sm">
+          <h3 className="text-lg font-semibold text-white mb-4">Attendance (Last 7 Days)</h3>
+          <div className="h-80">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={stats?.attendance_chart || []}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#333" />
+                <XAxis dataKey="name" stroke="#9ca3af" />
+                <YAxis stroke="#9ca3af" />
+                <Tooltip contentStyle={{ backgroundColor: '#18181b', borderColor: '#22c55e', color: '#fff' }} />
+                <Line type="monotone" dataKey="total" stroke="#22c55e" strokeWidth={2} dot={{ fill: '#22c55e' }} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
-

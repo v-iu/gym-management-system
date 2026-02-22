@@ -35,10 +35,10 @@ export default function TrainerSessions() {
     { key: 'service_name', label: 'Service' },
     { key: 'session_date', label: 'Scheduled Date' },
     { key: 'status', label: 'Status', render: (row) => (
-      <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${
-        row.status === 'scheduled' ? 'bg-blue-100 text-blue-700' :
-        row.status === 'completed' ? 'bg-green-100 text-green-700' :
-        'bg-red-100 text-red-700'
+      <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium border ${
+        row.status === 'scheduled' ? 'bg-blue-500/20 text-blue-400 border-blue-500/30' :
+        row.status === 'completed' ? 'bg-green-500/20 text-green-400 border-green-500/30' :
+        'bg-red-500/20 text-red-400 border-red-500/30'
       }`}>
         {row.status}
       </span>
@@ -58,48 +58,48 @@ export default function TrainerSessions() {
     <Modal isOpen={showModal} onClose={() => setShowModal(false)} title="Schedule Session">
       <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); }}>
         <div>
-          <label className="block text-sm font-medium text-gray-800 mb-1">Member ID</label>
+          <label className="block text-sm font-medium text-gray-400 mb-1">Member ID</label>
           <input
             type="number"
             name="member_id"
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 focus:ring-2 focus:ring-green-500 focus:border-green-500"
+            className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500/50 transition-all"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-800 mb-1">Trainer (Staff ID)</label>
+          <label className="block text-sm font-medium text-gray-400 mb-1">Trainer (Staff ID)</label>
           <input
             type="number"
             name="staff_id"
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 focus:ring-2 focus:ring-green-500 focus:border-green-500"
+            className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500/50 transition-all"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-800 mb-1">Service ID</label>
+          <label className="block text-sm font-medium text-gray-400 mb-1">Service ID</label>
           <input
             type="number"
             name="service_id"
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 focus:ring-2 focus:ring-green-500 focus:border-green-500"
+            className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500/50 transition-all"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-800 mb-1">Session Date &amp; Time</label>
+          <label className="block text-sm font-medium text-gray-400 mb-1">Session Date &amp; Time</label>
           <input
             type="datetime-local"
             name="session_date"
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 focus:ring-2 focus:ring-green-500 focus:border-green-500"
+            className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500/50 transition-all"
           />
         </div>
         <div className="flex justify-end gap-3 pt-2">
           <button
             type="button"
             onClick={() => setShowModal(false)}
-            className="px-4 py-2 text-sm text-gray-800 hover:text-gray-900"
+            className="px-4 py-2 text-sm text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors"
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700"
+            className="px-4 py-2 bg-green-500 hover:bg-green-400 text-black text-sm font-bold rounded-lg shadow-[0_0_10px_rgba(0,255,120,0.2)] transition-all"
           >
             Schedule
           </button>
