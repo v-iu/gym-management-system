@@ -26,26 +26,27 @@ export default function UserDirectory({ onSelect }) {
             key={r || 'all'} 
             type="button" 
             onClick={() => setUserListRole(r)}
-            className={`px-3 py-1 text-sm rounded capitalize ${userListRole === r ? 'bg-green-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+            className={`px-3 py-1 text-sm rounded capitalize ${userListRole === r ? 'bg-green-500 text-black shadow-[0_0_10px_rgba(0,255,120,0.3)]' : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white'}`}
           >
             {r || 'All'}
           </button>
         ))}
       </div>
 
-      <div className="h-64 overflow-y-auto bg-white rounded-xl border border-gray-200 shadow-sm">
-        <DataTable
-          columns={userColumns}
-          data={usersList}
-          loading={usersLoading}
-          onRowAction={onSelect}
-          actionLabel="Select"
-          tableClassName="bg-white"
-          headerTextClass="text-gray-900 font-medium"
-          rowTextClass="text-gray-900"
-          actionButtonClass="px-2 py-1 text-sm rounded hover:bg-gray-100 transition-colors"
-        />
-      </div>
+      <DataTable
+        columns={userColumns}
+        data={usersList}
+        loading={usersLoading}
+        onRowAction={onSelect}
+        actionLabel="Select"
+        maxHeight="max-h-64"
+        tableClassName="bg-black/60 backdrop-blur-xl shadow-[0_0_20px_rgba(0,255,120,0.05)]"
+        headerTextClass="text-gray-400 font-medium"
+        rowTextClass="text-white"
+        actionButtonClass="px-2 py-1 text-sm rounded bg-green-500/20 text-green-400 border border-green-500/30 hover:bg-green-500/30 transition-colors"
+      />
+      <div className="mt-2 text-sm text-gray-400">Click <span className="px-2 py-0.5 bg-white/10 rounded text-white">Select</span> to choose a user for check-in.</div>
+
       <div className="mt-2 text-sm text-gray-600">Click <span className="px-2 py-0.5 bg-gray-50 rounded">Select</span> to choose a user for check-in.</div>
 
     </div>

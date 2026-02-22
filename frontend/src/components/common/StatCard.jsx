@@ -12,7 +12,7 @@ export default function StatCard({ label, value, icon: Icon, color = 'green' }) 
   return (
     <div className="
       p-5 rounded-xl flex items-center gap-4
-      bg-black/40 backdrop-blur-xl border border-green-500/20
+      bg-black/60 backdrop-blur-xl border border-green-500/20
       shadow-[0_0_15px_rgba(0,255,120,0.15)]
     ">
       {/* Icon */}
@@ -28,4 +28,3 @@ export default function StatCard({ label, value, icon: Icon, color = 'green' }) 
     </div>
   );
 }
-

@@ -1,12 +1,11 @@
 import { useState, useEffect } from 'react';
 
-export default function MembershipApplicationForm({ member, membersList = [], staffList = [], onSubmit, onCancel }) {
+export default function MembershipApplicationForm({ member, membersList = [], onSubmit, onCancel }) {
   const [selectedMemberId, setSelectedMemberId] = useState(member?.id || '');
   const [type, setType] = useState('30-day');
   const [startDate, setStartDate] = useState(new Date().toISOString().slice(0, 10));
   const [amount, setAmount] = useState(1500.00);
   const [method, setMethod] = useState('cash');
-  const [staffId, setStaffId] = useState('');
   const [tendered, setTendered] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -14,12 +13,6 @@ export default function MembershipApplicationForm({ member, membersList = [], st
   useEffect(() => {
     if (member) setSelectedMemberId(member.id);
   }, [member]);
-
-  useEffect(() => {
-    if (staffList.length > 0 && !staffId) {
-      setStaffId(staffList[0].id);
-    }
-  }, [staffList, staffId]);
 
   useEffect(() => {
     if (type === '30-day') setAmount(1500.00);
@@ -39,11 +32,6 @@ export default function MembershipApplicationForm({ member, membersList = [], st
       }
     }
 
-    if (!staffId) {
-      setError('Please select a staff member.');
-      return;
-    }
-
     setLoading(true);
     try {
       await onSubmit({
@@ -52,7 +40,6 @@ export default function MembershipApplicationForm({ member, membersList = [], st
         start_date: startDate,
         amount,
         method,
-        staff_id: staffId,
         is_paid: 1,
         tendered: method === 'cash' ? parseFloat(tendered) : null,
         change_amount: method === 'cash' && tendered ? parseFloat((parseFloat(tendered) - amount).toFixed(2)) : 0
@@ -66,16 +53,16 @@ export default function MembershipApplicationForm({ member, membersList = [], st
 
   const change = method === 'cash' && tendered ? (parseFloat(tendered) - amount).toFixed(2) : '0.00';
 
-  const inputClass = "w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-green-500 focus:border-green-500";
+  const inputClass = "w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500/50 transition-all [&>option]:bg-zinc-900 [&>option]:text-white";
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      {error && <div className="bg-red-50 text-red-600 p-3 rounded text-sm">{error}</div>}
+      {error && <div className="bg-red-500/10 border border-red-500/20 text-red-200 p-3 rounded text-sm">{error}</div>}
 
       <div>
-        <label className="block text-sm font-medium text-gray-700">Member</label>
+        <label className="block text-sm font-medium text-gray-400">Member</label>
         {member ? (
-          <div className="text-gray-900 font-medium">{member.first_name} {member.last_name}</div>
+          <div className="text-white font-medium">{member.first_name} {member.last_name}</div>
         ) : (
           <select 
             value={selectedMemberId} 
@@ -92,7 +79,7 @@ export default function MembershipApplicationForm({ member, membersList = [], st
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Plan Type</label>
+          <label className="block text-sm font-medium text-gray-400 mb-1">Plan Type</label>
           <select 
             value={type} 
             onChange={e => setType(e.target.value)}
@@ -104,7 +91,7 @@ export default function MembershipApplicationForm({ member, membersList = [], st
           </select>
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+          <label className="block text-sm font-medium text-gray-400 mb-1">Start Date</label>
           <input 
             type="date" 
             value={startDate} 
@@ -116,7 +103,7 @@ export default function MembershipApplicationForm({ member, membersList = [], st
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Amount (₱)</label>
+          <label className="block text-sm font-medium text-gray-400 mb-1">Amount (₱)</label>
           <input 
             type="number" 
             value={amount} 
@@ -126,7 +113,7 @@ export default function MembershipApplicationForm({ member, membersList = [], st
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Payment Method</label>
+          <label className="block text-sm font-medium text-gray-400 mb-1">Payment Method</label>
           <select 
             value={method} 
             onChange={e => setMethod(e.target.value)}
@@ -141,7 +128,7 @@ export default function MembershipApplicationForm({ member, membersList = [], st
 
       {method === 'cash' && (
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Tendered (₱)</label>
+          <label className="block text-sm font-medium text-gray-400 mb-1">Tendered (₱)</label>
           <input 
             type="number" 
             value={tendered} 
@@ -150,26 +137,13 @@ export default function MembershipApplicationForm({ member, membersList = [], st
             step="0.01"
             placeholder="Amount received"
           />
-          <div className="mt-1 text-sm text-gray-600">Change: ₱{change}</div>
+          <div className="mt-1 text-sm text-gray-400">Change: ₱{change}</div>
         </div>
       )}
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Processed By</label>
-        <select 
-          value={staffId} 
-          onChange={e => setStaffId(e.target.value)}
-          className={inputClass}
-        >
-          {staffList.map(s => (
-            <option key={s.id} value={s.id}>{s.first_name} {s.last_name}</option>
-          ))}
-        </select>
-      </div>
-
       <div className="flex justify-end gap-3 pt-2">
-        <button type="button" onClick={onCancel} className="px-4 py-2 text-gray-600 text-sm hover:bg-gray-100 rounded-lg transition-colors">Cancel</button>
-        <button type="submit" disabled={loading} className="px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 transition-colors disabled:opacity-50">
+        <button type="button" onClick={onCancel} className="px-4 py-2 text-gray-400 text-sm hover:text-white hover:bg-white/5 rounded-lg transition-colors">Cancel</button>
+        <button type="submit" disabled={loading} className="px-4 py-2 bg-green-500 hover:bg-green-400 text-black rounded-lg text-sm font-bold shadow-[0_0_10px_rgba(0,255,120,0.2)] transition-all disabled:opacity-50">
           {loading ? 'Processing...' : 'Apply Membership'}
         </button>
       </div>
