@@ -63,7 +63,7 @@ class Equipement{
 //get all equipment logs
     public function getAll(){
         $this->db->query("SELECT e.*, s.first_name AS staff_first_name, s.last_name AS staff_last_name FROM equipment e 
-        LEFT JOIN staff s ON e.staff_id = s.id 
+        LEFT JOIN user s ON e.staff_id = s.id 
         ORDER BY e.name DESC");
         return $this->db->resultSet();
     }
