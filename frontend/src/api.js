@@ -32,27 +32,28 @@ export const api = {
   post: (endpoint, body) =>
     request(endpoint, {
       method: 'POST',
-      body: toFormData(body),
-      // Content-Type is auto-set to application/x-www-form-urlencoded
+
+      // === CHANGE HERE ===
+      // We need to send JSON for the backend store() method to read the data
+      // Previously it was: body: toFormData(body), which sends form-encoded data
+      headers: { 'Content-Type': 'application/json' }, 
+      body: JSON.stringify(body),
     }),
 
   put: (endpoint, body) =>
     request(endpoint, {
       method: 'PUT',
-      body: toFormData(body),
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
     }),
 
   delete: (endpoint) => request(endpoint, { method: 'DELETE' }),
 };
 
-// Usage examples:
-// import { api } from './api';
-//
-// Register a member:
-//   api.post('members/register', { first_name: 'John', last_name: 'Doe', ... })
-//
-// Register a guest:
-//   api.post('guests/register', { first_name: 'Jane', last_name: 'Doe', ... })
-//
-// Check in:
-//   api.post('attendances/checkInOut', { email: 'john@example.com', action: 'checkin' })
+/*
+Explanation of change:
+- Your backend's getRequestBody() expects JSON, not form-encoded data.
+- Without setting Content-Type to 'application/json' and stringifying the body,
+  $data in PHP will be empty, causing validation to fail.
+- This change ensures all POST/PUT requests send proper JSON payloads.
+*/
