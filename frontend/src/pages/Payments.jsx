@@ -8,13 +8,7 @@ import usePayments from '../hooks/usePayments';
 export default function PaymentsPage() {
   const { payments, loading, refresh, create, update, remove } = usePayments();
   const [showModal, setShowModal] = useState(false);
-  // formError is no longer needed; PaymentForm manages its own validation messages
-
-  // form state for create/edit
   const [editing, setEditing] = useState(null);
-
-  // PaymentForm handles its own submission and validation; we no longer use
-  // a separate handler here. keep `editing` state for passing into the modal.
 
   const togglePaid = async (row) => {
     try {
@@ -65,8 +59,8 @@ export default function PaymentsPage() {
     },
     { key: 'actions', label: '', render: (row) => (
       <div className="flex gap-3 justify-end">
-        <button onClick={() => { setEditing(row); setShowModal(true); }} className="text-xs text-blue-600 hover:text-blue-700">Edit</button>
-        <button onClick={() => handleDelete(row.id)} className="text-xs text-red-600 hover:text-red-700">Delete</button>
+        <button onClick={() => { setEditing(row); setShowModal(true); }} className="text-xs text-blue-600 hover:text-blue-800">Edit</button>
+        <button onClick={() => handleDelete(row.id)} className="text-xs text-red-600 hover:text-red-800">Delete</button>
       </div>
     )}
   ];
@@ -94,8 +88,8 @@ export default function PaymentsPage() {
       />
 
       <div className="flex gap-3 items-center mb-4">
-        <button onClick={exportCSV} className="px-3 py-2 text-sm bg-gray-100 rounded">Export CSV</button>
-        <button onClick={refresh} className="px-3 py-2 text-sm bg-gray-100 rounded">Refresh</button>
+        <button onClick={exportCSV} className="px-3 py-2 text-sm bg-gray-100 text-gray-900 rounded hover:bg-gray-200">Export CSV</button>
+        <button onClick={refresh} className="px-3 py-2 text-sm bg-gray-100 text-gray-900 rounded hover:bg-gray-200">Refresh</button>
       </div>
 
       <DataTable columns={columns} data={payments} loading={loading} />

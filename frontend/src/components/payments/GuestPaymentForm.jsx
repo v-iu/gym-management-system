@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 export default function GuestPaymentForm({ guest, staffList = [], onSubmit, onCancel }) {
   const [amount, setAmount] = useState(50.00);
@@ -42,7 +42,7 @@ export default function GuestPaymentForm({ guest, staffList = [], onSubmit, onCa
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      {error && <div className="bg-red-50 text-red-600 p-3 rounded text-sm">{error}</div>}
+      {error && <div className="bg-red-50 text-red-700 p-3 rounded text-sm">{error}</div>}
       
       <div>
         <label className="block text-sm font-medium text-gray-700">Guest</label>
@@ -56,7 +56,7 @@ export default function GuestPaymentForm({ guest, staffList = [], onSubmit, onCa
             type="number" 
             value={amount} 
             onChange={e => setAmount(parseFloat(e.target.value))}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 focus:ring-2 focus:ring-green-500 focus:border-green-500"
             step="0.01"
           />
         </div>
@@ -65,7 +65,7 @@ export default function GuestPaymentForm({ guest, staffList = [], onSubmit, onCa
           <select 
             value={method} 
             onChange={e => setMethod(e.target.value)}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 focus:ring-2 focus:ring-green-500 focus:border-green-500"
           >
             <option value="cash">Cash</option>
             <option value="gcash">GCash</option>
@@ -81,7 +81,7 @@ export default function GuestPaymentForm({ guest, staffList = [], onSubmit, onCa
             type="number" 
             value={tendered} 
             onChange={e => setTendered(e.target.value)}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 focus:ring-2 focus:ring-green-500 focus:border-green-500"
             step="0.01"
             placeholder="Amount received"
           />

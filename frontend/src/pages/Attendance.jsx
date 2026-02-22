@@ -37,11 +37,9 @@ export default function AttendancePage() {
         if (!paid) {
           setPendingGuestId(userId);
           setShowPaymentModal(true);
-          return; // wait for payment before calling checkin
+          return;
         }
       } catch (err) {
-        console.error('Error checking payment status', err);
-        // If we can't verify payment status, assume not paid so we can collect/verify manually
         setPendingGuestId(userId);
         setShowPaymentModal(true);
         return;
@@ -52,7 +50,6 @@ export default function AttendancePage() {
       const res = await checkin({ role, user_id: parseInt(userId, 10) });
       setCheckinMsg({ type: 'success', text: res.message });
     } catch (err) {
-      // if anything still goes wrong just show the message (should be rare now)
       const message = err?.data?.message || err?.message || 'Check-in failed';
       setCheckinMsg({ type: 'error', text: message });
     }
@@ -68,9 +65,6 @@ export default function AttendancePage() {
     }
   };
 
-  // Find the selected guest object for the payment form
-  // We can infer this from the selectedUser state if it matches, or we might need to pass it from CheckInWidget
-  // For simplicity, let's assume selectedUser is the one we are paying for if the modal is open
   const paymentGuest = pendingGuestId 
     ? guests.find(g => g.id === parseInt(pendingGuestId, 10)) 
     : (selectedUser?.role === 'guest' ? selectedUser : null);
@@ -109,7 +103,6 @@ export default function AttendancePage() {
         onCheckout={handleCheckout}
       />
 
-      {/* Payment modal used when guest hasn't paid yet */}
       <Modal isOpen={showPaymentModal} onClose={() => { setShowPaymentModal(false); setPendingGuestId(null); }} title="Collect Guest Payment">
         {paymentGuest && (
           <GuestPaymentForm
@@ -120,7 +113,6 @@ export default function AttendancePage() {
               await paymentService.create(payload);
               setShowPaymentModal(false);
 
-              // retry check-in after successful payment — include staff_id so attendance records who processed it
               try {
                 const uid = paymentGuest.id;
                 await checkin({ 
