@@ -1,5 +1,5 @@
 <?php
-class Equipement{
+class Equipment{
     private $db;
 
     public function __construct(){
@@ -28,7 +28,7 @@ class Equipement{
     }
 
 //update an equipment
-    public function update($data){
+    public function update($id, $data){
         $sql = ("UPDATE equipment SET staff_id = :staff_id, name = :name, type = :type, amount = :amount, brand = :brand, serial_num = :serial_num, warranty_expiry = :warranty_expiry, purchased_on = :purchased_on, purchase_cost = :purchase_cost WHERE id = :id");
         $this->db->query($sql);
         $this->db->bind(':staff_id', $data['staff_id']);
