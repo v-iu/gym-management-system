@@ -6,11 +6,11 @@ class TrainerSession{
         $this->db = new Database();
     }
 
-    // CREATE SESSION
+//add a trainer session
     public function create($data){
         $sql = "INSERT INTO trainer_session 
-                (member_id, staff_id, service_id, session_date, status) 
-                VALUES (:member_id, :staff_id, :service_id, :session_date, :status)";
+        (member_id, staff_id, service_id, session_date, status) 
+        VALUES (:member_id, :staff_id, :service_id, :session_date, :status)";
 
         $this->db->query($sql);
         $this->db->bind(':member_id', $data['member_id']);
@@ -22,16 +22,9 @@ class TrainerSession{
         return $this->db->execute();
     }
 
-    // UPDATE SESSION
-    public function update($id, $data){
-        $sql = "UPDATE trainer_session 
-                SET member_id = :member_id,
-                    staff_id = :staff_id,
-                    service_id = :service_id,
-                    session_date = :session_date,
-                    status = :status
-                WHERE id = :id";
-
+//update existing trainer session
+    public function update($id, $data) {
+        $sql = "UPDATE trainer_session SET member_id = :member_id, staff_id = :staff_id, service_id = :service_id, session_date = :session_date, status = :status WHERE id = :id";
         $this->db->query($sql);
         $this->db->bind(':member_id', $data['member_id']);
         $this->db->bind(':staff_id', $data['staff_id']);

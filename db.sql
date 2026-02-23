@@ -37,6 +37,7 @@ CREATE TABLE user (
     staff_role ENUM('admin', 'trainer', 'receptionist', 'janitor') DEFAULT NULL, -- Staff specific
     emergency_contact VARCHAR(255), -- Member specific
     membership_id INT, -- Member specific
+    is_suspended BOOLEAN DEFAULT FALSE,
 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -95,7 +96,7 @@ CREATE TABLE equipment_records (
 CREATE TABLE attendance (
     id INT PRIMARY KEY AUTO_INCREMENT,
     user_id INT NOT NULL,
-    staff_id INT,
+    staff_id INT NOT NULL,
     check_in_time DATETIME NOT NULL,
     check_out_time DATETIME,
     FOREIGN KEY (user_id) REFERENCES user(id),
@@ -124,6 +125,7 @@ CREATE TABLE payment (
 
 -- Default Receptionist Account (Password: admin123)
 -- Note: In a real application, ensure the backend hashes this password before checking.
-INSERT INTO user (first_name, last_name, email, phone, role, password, staff_role) VALUES ('Reception', 'Desk', 'admin@gym.com', '000-000-0000', 'staff', '$2b$10$EixZaYVK1fsbw1ZfbX3OXePaWrn9IzyV1ntXR0sXRCy.baWekyZLi', 'receptionist');
+INSERT INTO user (id, first_name, last_name, email, phone, role, password, staff_role) VALUES 
+(1, 'Reception', 'Desk', 'admin@gym.com', '000-000-0000', 'staff', '$2y$10$EixZaYVK1fsbw1ZfbX3OXePaWrn9IzyV1ntXR0sXRCy.baWekyZLi', 'receptionist');
 
 SET FOREIGN_KEY_CHECKS = 1;
