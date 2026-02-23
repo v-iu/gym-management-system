@@ -45,10 +45,6 @@ export default function UserDirectory({ onSelect }) {
         rowTextClass="text-white"
         actionButtonClass="px-2 py-1 text-sm rounded bg-green-500/20 text-green-400 border border-green-500/30 hover:bg-green-500/30 transition-colors"
       />
-      <div className="mt-2 text-sm text-gray-400">Click <span className="px-2 py-0.5 bg-white/10 rounded text-white">Select</span> to choose a user for check-in.</div>
-
-      <div className="mt-2 text-sm text-gray-600">Click <span className="px-2 py-0.5 bg-gray-50 rounded">Select</span> to choose a user for check-in.</div>
-
     </div>
   );
 }

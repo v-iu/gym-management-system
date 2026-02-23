@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../api";
-import { Dumbbell } from "lucide-react";
+import { Dumbbell, RefreshCw } from "lucide-react";
 
 export default function StaffLoginPage() {
   const [email, setEmail] = useState("");
@@ -23,6 +23,20 @@ export default function StaffLoginPage() {
       }
     } catch (err) {
       setError(err.data?.message || "Invalid email or password");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSeed = async () => {
+    if (!window.confirm("⚠️ WARNING: This will wipe all database data and reset it to the demo defaults. Continue?")) return;
+    
+    setLoading(true);
+    try {
+      const res = await api.get("seed");
+      alert(res.message || "Database reset successfully");
+    } catch (err) {
+      alert("Failed to reset database: " + (err.data?.message || err.message));
     } finally {
       setLoading(false);
     }
@@ -83,6 +97,18 @@ export default function StaffLoginPage() {
           >
             {loading ? "Authenticating..." : "Sign In"}
           </button>
+
+          <div className="pt-6 mt-6 border-t border-white/10">
+            <button
+              type="button"
+              onClick={handleSeed}
+              disabled={loading}
+              className="w-full py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white text-sm font-medium transition-all flex items-center justify-center gap-2"
+            >
+              <RefreshCw className="w-4 h-4" />
+              Reset Demo Data
+            </button>
+          </div>
         </form>
       </div>
     </div>
