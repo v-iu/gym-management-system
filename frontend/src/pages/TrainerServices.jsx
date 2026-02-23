@@ -154,7 +154,7 @@ export default function TrainerServicesPage() {
               placeholder="e.g., Personal Training"
               value={formData.service_name}
               onChange={handleInputChange}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-green-500 focus:border-green-500"
+              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500/50 transition-all"
               required
             />
           </div>
@@ -169,7 +169,7 @@ export default function TrainerServicesPage() {
                 placeholder="e.g., 500.00"
                 value={formData.price}
                 onChange={handleInputChange}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500/50 transition-all"
                 required
               />
             </div>
@@ -182,7 +182,7 @@ export default function TrainerServicesPage() {
                 placeholder="e.g., 60"
                 value={formData.duration_minutes}
                 onChange={handleInputChange}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500/50 transition-all"
                 required
               />
             </div>

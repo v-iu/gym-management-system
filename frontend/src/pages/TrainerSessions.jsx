@@ -35,10 +35,10 @@ export default function TrainerSessions() {
     { key: 'service_name', label: 'Service' },
     { key: 'session_date', label: 'Scheduled Date' },
     { key: 'status', label: 'Status', render: (row) => (
-      <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium border ${
-        row.status === 'scheduled' ? 'bg-blue-500/20 text-blue-400 border-blue-500/30' :
-        row.status === 'completed' ? 'bg-green-500/20 text-green-400 border-green-500/30' :
-        'bg-red-500/20 text-red-400 border-red-500/30'
+      <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${
+        row.status === 'scheduled' ? 'bg-blue-100 text-blue-700' :
+        row.status === 'completed' ? 'bg-green-100 text-green-700' :
+        'bg-red-100 text-red-700'
       }`}>
         {row.status}
       </span>
@@ -99,7 +99,7 @@ export default function TrainerSessions() {
           </button>
           <button
             type="submit"
-            className="px-4 py-2 bg-green-500 hover:bg-green-400 text-black text-sm font-bold rounded-lg shadow-[0_0_10px_rgba(0,255,120,0.2)] transition-all"
+            className="px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700"
           >
             Schedule
           </button>
