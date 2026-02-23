@@ -10,6 +10,7 @@ export default function EquipmentPage() {
   const [showModal, setShowModal] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [formData, setFormData] = useState({
+    id: 0,
     staff_id: null,
     name: '',
     type: '',
@@ -43,6 +44,7 @@ export default function EquipmentPage() {
   // Open modal for editing a service
   const openEditModal = (equipment) => {
     setFormData({
+      id: equipment.id,
       staff_id: equipment.staff_id ?? null,
       name: equipment.name ?? '',
       type: equipment.type ?? '',
@@ -98,6 +100,7 @@ export default function EquipmentPage() {
 
       // Reset form and close modal
       setFormData({
+        id: 0,
         staff_id: null,
         name: '',
         type: '',

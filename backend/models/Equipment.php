@@ -28,7 +28,7 @@ class Equipment{
     }
 
 //update an equipment
-    public function update($data){
+    public function update($id, $data){
         $sql = ("UPDATE equipment SET staff_id = :staff_id, name = :name, type = :type, amount = :amount, brand = :brand, serial_num = :serial_num, warranty_expiry = :warranty_expiry, purchased_on = :purchased_on, purchase_cost = :purchase_cost WHERE id = :id");
         $this->db->query($sql);
         $this->db->bind(':staff_id', $data['staff_id']);
@@ -63,7 +63,7 @@ class Equipment{
 //get all equipment logs
     public function getAll(){
         $this->db->query("SELECT e.*, s.first_name AS staff_fname, s.last_name AS staff_lname FROM equipment e 
-        LEFT JOIN staff s ON e.staff_id = s.id 
+        LEFT JOIN user s ON e.staff_id = s.id 
         ORDER BY e.name DESC");
         return $this->db->resultSet();
     }
