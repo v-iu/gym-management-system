@@ -1,16 +1,11 @@
 import { api } from '../api';
 
-const BASE = 'Users';
+const BASE = 'Equipments';
 
-const userService = {
+const equipmentService = {
   list: async () => {
     const res = await api.get(`${BASE}/index`);
-    return res.data || [];
-  },
-
-  listByRole: async (role) => {
-    const res = await api.get(`${BASE}/byRole/${role}`);
-    return res.data || [];
+    return res.data || []; 
   },
 
   get: async (id) => {
@@ -19,7 +14,7 @@ const userService = {
   },
 
   create: async (payload) => {
-    return api.post(`${BASE}/register`, payload);
+    return api.post(`${BASE}/store`, payload);
   },
 
   update: async (id, payload) => {
@@ -30,13 +25,14 @@ const userService = {
     return api.delete(`${BASE}/destroy/${id}`);
   },
 
-  suspend: async (id) => {
-    return api.post(`${BASE}/suspend/${id}`);
+  records: async (id) => {
+    const res = await api.get(`${BASE}/records/${id}`);
+    return res.data;
   },
-
-  activate: async (id) => {
-    return api.post(`${BASE}/activate/${id}`);
+  
+  createRecord: async (payload) => {
+    return api.post(`${BASE}/addRecord`, payload);
   }
 };
 
-export default userService;
+export default equipmentService;

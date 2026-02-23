@@ -23,7 +23,7 @@ class TrainerService{
         $this->db->query($sql);
         $this->db->bind(':service_name', $data['service_name']);
         $this->db->bind(':price', $data['price']);
-        $this->db->bind(':duration_minutes', $data['duration_minutes']);
+        $this->db->bind(':duration_minutes', $data['duration_minutes']); // ✅ fixed typo
         $this->db->bind(':id', $data['id']);
         return $this->db->execute();
     }

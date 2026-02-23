@@ -1,54 +1,116 @@
 import { useState } from "react";
-import { testStaff } from "../data/staff";
+import { useNavigate } from "react-router-dom";
+import { api } from "../api";
+import { Dumbbell, RefreshCw } from "lucide-react";
 
 export default function StaffLoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loginMessage, setLoginMessage] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    const user = testStaff.find((u) => u.email === email && u.password === password);
-    if (user) setLoginMessage(`Welcome ${user.role} ${user.email}`);
-    else setLoginMessage("Invalid email or password");
+    setError("");
+    setLoading(true);
+
+    try {
+      const res = await api.post("users/login", { email, password });
+      if (res.success) {
+        localStorage.setItem("user", JSON.stringify(res.user));
+        navigate("/");
+      }
+    } catch (err) {
+      setError(err.data?.message || "Invalid email or password");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSeed = async () => {
+    if (!window.confirm("⚠️ WARNING: This will wipe all database data and reset it to the demo defaults. Continue?")) return;
+    
+    setLoading(true);
+    try {
+      const res = await api.get("seed");
+      alert(res.message || "Database reset successfully");
+    } catch (err) {
+      alert("Failed to reset database: " + (err.data?.message || err.message));
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="max-w-md mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-6 text-white">Staff Login</h1>
+    <div className="min-h-screen flex items-center justify-center px-4">
+      <div className="max-w-md w-full bg-black/60 backdrop-blur-xl border border-green-500/20 rounded-2xl shadow-[0_0_40px_rgba(0,255,120,0.1)] p-8">
+        
+        {/* Header Section */}
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-green-500/20 rounded-2xl border border-green-400/30 shadow-[0_0_15px_rgba(0,255,120,0.3)] mb-4">
+            <Dumbbell className="w-8 h-8 text-green-400" />
+          </div>
+          <h1 className="text-2xl font-bold text-white tracking-wide">GymFlow</h1>
+          <p className="text-green-400/70 text-sm">Management System</p>
+        </div>
 
-      <form
-        onSubmit={handleLogin}
-        className="flex flex-col gap-4 rounded-lg p-6 bg-gray-800/30 backdrop-blur-sm shadow-lg border border-gray-700/40"
-      >
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="px-4 py-2 rounded bg-gray-800/50 border border-gray-700/30 text-white placeholder-gray-400 backdrop-blur-sm"
-          required
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="px-4 py-2 rounded bg-gray-800/50 border border-gray-700/30 text-white placeholder-gray-400 backdrop-blur-sm"
-          required
-        />
-        <button
-          type="submit"
-          className="bg-[#39FF14] text-black font-bold py-2 px-4 rounded hover:bg-green-400 transition-colors"
-        >
-          Login
-        </button>
-      </form>
+        <form onSubmit={handleLogin} className="space-y-5">
+          {error && (
+            <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-200 text-sm text-center">
+              {error}
+            </div>
+          )}
+          
+          <div className="space-y-4">
+            <div>
+              <label className="block text-xs font-medium text-gray-400 mb-1 uppercase tracking-wider">Email Address</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-green-500/50 focus:ring-1 focus:ring-green-500/50 transition-all"
+                placeholder="admin@gym.com"
+                required
+                disabled={loading}
+              />
+            </div>
+            
+            <div>
+              <label className="block text-xs font-medium text-gray-400 mb-1 uppercase tracking-wider">Password</label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-green-500/50 focus:ring-1 focus:ring-green-500/50 transition-all"
+                placeholder="••••••••"
+                required
+                disabled={loading}
+              />
+            </div>
+          </div>
 
-      {loginMessage && (
-        <p className="mt-4 text-center text-gray-400">{loginMessage}</p>
-      )}
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full py-3.5 rounded-xl bg-green-500 hover:bg-green-400 text-black font-bold shadow-[0_0_20px_rgba(0,255,120,0.3)] hover:shadow-[0_0_30px_rgba(0,255,120,0.5)] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed mt-2"
+          >
+            {loading ? "Authenticating..." : "Sign In"}
+          </button>
+
+          <div className="pt-6 mt-6 border-t border-white/10">
+            <button
+              type="button"
+              onClick={handleSeed}
+              disabled={loading}
+              className="w-full py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white text-sm font-medium transition-all flex items-center justify-center gap-2"
+            >
+              <RefreshCw className="w-4 h-4" />
+              Reset Demo Data
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }
-

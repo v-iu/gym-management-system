@@ -1,5 +1,5 @@
 <?php
-class Equipement{
+class Equipment{
     private $db;
 
     public function __construct(){
@@ -40,7 +40,7 @@ class Equipement{
         $this->db->bind(':warranty_expiry', $data['warranty_expiry'] ?? '');
         $this->db->bind(':purchased_on', $data['purchased_on']);
         $this->db->bind(':purchase_cost', $data['purchase_cost']);
-        $this->db->bind(':id', $data['id']);
+        $this->db->bind(':id', $id);
 
         if($this->db->execute()){
             return true;

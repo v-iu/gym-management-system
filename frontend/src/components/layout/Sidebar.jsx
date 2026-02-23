@@ -29,7 +29,7 @@ export default function Sidebar({ isOpen, onClose }) {
       {/* Mobile overlay */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden"
+          className="fixed inset-0 bg-black/95/60 backdrop-blur-sm z-40 lg:hidden"
           onClick={onClose}
         />
       )}
@@ -86,4 +86,3 @@ export default function Sidebar({ isOpen, onClose }) {
     </>
   );
 }
-

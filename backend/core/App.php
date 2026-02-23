@@ -57,7 +57,7 @@ class App{
         try {
             call_user_func_array([$this->controller, $this->method], $this->params);
         } catch (Throwable $e) {
-            $this->respondError(500, 'An unexpected server error occurred');
+            $this->respondError(500, $e->getMessage());
         }
     }
 
