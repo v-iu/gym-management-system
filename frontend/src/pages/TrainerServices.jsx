@@ -114,13 +114,13 @@ export default function TrainerServicesPage() {
         <div className="flex gap-2">
           <button
             onClick={() => openEditModal(row)}
-            className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition"
+            className="px-2 py-1 text-xs bg-green-600/20 text-green-500 font-medium rounded border border-green-600/30 hover:bg-green-600/30 transition-colors"
           >
             Edit
           </button>
           <button
             onClick={() => handleDeleteService(row.id)}
-            className="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700 transition"
+            className="px-2 py-1 text-xs rounded bg-red-500/20 text-red-400 border border-red-500/30 hover:bg-red-500/30 font-medium transition-colors"
           >
             Delete
           </button>
