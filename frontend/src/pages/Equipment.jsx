@@ -153,7 +153,7 @@ export default function EquipmentPage() {
           <button onClick={() => openEditModal(row)} className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition">
             Edit
           </button>
-          <button onClick={() => handleDeleteService(row.id)}className="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700 transition">
+          <button onClick={() => handleDeleteService(row.id)}className="px-2 py-1 text-xs rounded bg-red-500/20 text-red-400 border border-red-500/30 hover:bg-red-500/30 font-medium transition-colors">
             Delete
           </button>
         </div>
