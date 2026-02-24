@@ -75,7 +75,7 @@ class Memberships extends Controller {
         if (!$id) $this->error('ID required', 400);
 
         // Check existence and ownership (TODO: Add user authorization check here)
-        $existing = $this->membershipModel->findMembership($id);
+        $existing = $this->membershipModel->getById($id);
         if (!$existing) $this->error('Membership not found', 404);
 
         $data = (array) $this->getRequestBody();
