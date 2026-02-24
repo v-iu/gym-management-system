@@ -134,13 +134,13 @@ export default function TrainerSessions() {
         <div className="flex gap-2">
           <button
             onClick={() => handleEdit(row)}
-            className="px-2 py-1 text-xs bg-yellow-600 text-white rounded hover:bg-yellow-700"
+            className="px-2 py-1 text-xs bg-green-600/20 text-green-500 font-medium rounded border border-green-600/30 hover:bg-green-600/30 transition-colors"
           >
             Edit
           </button>
           <button
             onClick={() => handleDelete(row.id)}
-            className="px-2 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700"
+            className="px-2 py-1 text-xs rounded bg-red-500/20 text-red-400 border border-red-500/30 hover:bg-red-500/30 font-medium transition-colors"
           >
             Delete
           </button>
