@@ -45,9 +45,18 @@ export default function PaymentsPage() {
         {row.payment_type}
       </span>
     )},
-    { key: 'amount', label: 'Amount', render: (row) => `₱${parseFloat(row.amount).toLocaleString()}` },
-    { key: 'tendered', label: 'Tendered', render: (row) => row.tendered != null ? `₱${parseFloat(row.tendered).toLocaleString()}` : '—' },
-    { key: 'change_amount', label: 'Change', render: (row) => row.change_amount != null ? `₱${parseFloat(row.change_amount).toLocaleString()}` : '—' },
+    { key: 'amount', label: 'Amount', render: (row) => `₱${parseFloat(row.amount).toLocaleString('en-PH', { 
+          minimumFractionDigits: 2, 
+          maximumFractionDigits: 2 
+        })}` },
+    { key: 'tendered', label: 'Tendered', render: (row) => row.tendered != null ? `₱${parseFloat(row.tendered).toLocaleString('en-PH', { 
+          minimumFractionDigits: 2, 
+          maximumFractionDigits: 2 
+        })}` : '—' },
+    { key: 'change_amount', label: 'Change', render: (row) => row.change_amount != null ? `₱${parseFloat(row.change_amount).toLocaleString('en-PH', { 
+          minimumFractionDigits: 2, 
+          maximumFractionDigits: 2 
+        })}` : '—' },
     { key: 'method', label: 'Method', render: (row) => (
       <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium border ${
         row.method === 'cash' ? 'bg-green-500/20 text-green-400 border-green-500/30' :
@@ -102,7 +111,6 @@ export default function PaymentsPage() {
       <PageHeader
         title="Payments"
         subtitle="Track payments and receipts"
-        actionLabel="Record Payment"
         onAction={() => { setEditing(null); setShowModal(true); }}
       />
 
@@ -135,11 +143,11 @@ export default function PaymentsPage() {
 
       <DataTable columns={columns} data={filteredPayments} loading={loading} />
 
-      <Modal isOpen={showModal} onClose={() => setShowModal(false)} title={editing ? 'Edit Payment' : 'Record Payment'}>
+      <Modal isOpen={showModal} onClose={() => setShowModal(false)} title={'Edit Payment'}>
         <PaymentForm
           includeUser={true}
           defaultValues={editing || { payment_type: 'one-time', method: 'cash', is_paid: true }}
-          submitLabel={editing ? 'Save' : 'Record'}
+          submitLabel={'Save'}
           onSubmit={async (payload) => {
             if (editing) {
               await update(editing.id, payload);
