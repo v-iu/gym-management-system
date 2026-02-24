@@ -253,7 +253,7 @@ class Membership{
         return $this->db->resultSet();
     }
 //look for specific membership of a member
-    public function findMembership($id){
+    public function getById($id){
         $this->db->query("SELECT * FROM membership WHERE id = :id");
         $this->db->bind(':id', $id);
         $row = $this->db->single();
