@@ -70,7 +70,7 @@ export default function PaymentsPage() {
       <div className="flex gap-3 justify-end">
         <button 
           onClick={() => { setEditing(row); setShowModal(true); }} 
-          className="px-2 py-1 text-xs rounded bg-blue-500/20 text-blue-400 border border-blue-500/30 hover:bg-blue-500/30 font-medium transition-colors"
+          className="px-2 py-1 text-xs bg-green-600/20 text-green-500 font-medium rounded border border-green-600/30 hover:bg-green-600/30 transition-colors"
         >
           Edit
         </button>

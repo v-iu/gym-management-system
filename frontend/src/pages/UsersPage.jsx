@@ -112,7 +112,7 @@ export default function UsersPage() {
 <div className="flex gap-2 justify-end">
   <button 
     onClick={() => handleEdit(row)} 
-    className="px-2 py-1 text-xs text-blue-400 bg-blue-500/20 border border-blue-500/30 rounded hover:bg-blue-500/30 font-medium transition-colors"
+    className="px-2 py-1 text-xs bg-green-600/20 text-green-500 font-medium rounded border border-green-600/30 hover:bg-green-600/30 transition-colors"
   >
     Edit
   </button>
