@@ -104,7 +104,11 @@ export default function TrainerServicesPage() {
   const columns = [
     { key: 'id', label: 'ID' },
     { key: 'service_name', label: 'Service Name' },
-    { key: 'price', label: 'Price', render: (row) => `₱${parseFloat(row.price).toLocaleString()}` },
+    { key: 'price', label: 'Price', render: (row) => row.price != null ? `₱${parseFloat(row.price).toLocaleString('en-PH', { 
+        minimumFractionDigits: 2, 
+        maximumFractionDigits: 2 
+      })}` : '—' 
+    },
     { key: 'duration_minutes', label: 'Duration', render: (row) => `${row.duration_minutes} min` },
     { key: 'created_at', label: 'Created' },
     {

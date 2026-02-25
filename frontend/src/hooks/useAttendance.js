@@ -26,16 +26,16 @@ export default function useAttendance() {
   const fetchForDate = useCallback(async (date) => {
     setLoading(true);
     try {
-      const [att, mem, gst, stf] = await Promise.all([
+      // Only two parallel calls now instead of four
+      const [att, usersByRole] = await Promise.all([
         attendanceService.getByDate(date),
-        attendanceService.listMembers(),
-        attendanceService.listGuests(),
-        attendanceService.listStaff(),
+        attendanceService.listAllUsersByRole(),
       ]);
+      
       setAttendance(att || []);
-      setMembers(mem || []);
-      setGuests(gst || []);
-      setStaff(stf || []);
+      setMembers(usersByRole.members);
+      setGuests(usersByRole.guests);
+      setStaff(usersByRole.staff);
       setSelectedDate(date);
     } catch (err) {
       console.error('useAttendance fetchForDate error', err);
@@ -44,7 +44,6 @@ export default function useAttendance() {
       setLoading(false);
     }
   }, []);
-
   // Initial load: available dates, then pick sensible selectedDate
   useEffect(() => {
     (async () => {

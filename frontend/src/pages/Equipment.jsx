@@ -57,7 +57,21 @@ export default function EquipmentPage() {
     });
     setShowModal(true);
   };
-
+  const openAddModal = () => {
+    setFormData({
+      id: 0,
+      staff_id: null,
+      name: '',
+      type: 'Machine', // Set a default type
+      amount: 1,
+      brand: '',
+      serial_num: '',
+      warranty_expiry: '',
+      purchased_on: new Date().toISOString().slice(0, 10), // Default to today
+      purchase_cost: '',
+    });
+    setShowModal(true);
+  };
   // Handle Add or Edit form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -97,19 +111,6 @@ export default function EquipmentPage() {
             : 0,        });
         alert('Equipment added successfully!');
       }
-
-      // Reset form and close modal
-      setFormData({
-        id: 0,
-        staff_id: null,
-        name: '',
-        type: '',
-        amount: '',
-        brand: '',
-        serial_num: '',
-        warranty_expiry: '',
-        purchased_on: '',
-        purchase_cost: '',});
       setShowModal(false);
       fetchEquipment(); // refresh table
     } catch (err) {
@@ -167,7 +168,7 @@ export default function EquipmentPage() {
         title="Equipment"
         subtitle="Manage gym equipment and maintenance"
         actionLabel="Add Equipment"
-        onAction={() => setShowModal(true)}
+        onAction={openAddModal}
       />
 
       <DataTable columns={columns} data={equipment} loading={loading} />

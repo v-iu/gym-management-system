@@ -18,6 +18,7 @@ export default function UsersPage() {
   
   // State for immediate membership application flow
   const [newMemberId, setNewMemberId] = useState(null);
+  const [newlyCreatedUser, setNewlyCreatedUser] = useState(null);
   const { users: staff } = useUsers('staff');
 
   // editing state for CRUD
@@ -67,18 +68,36 @@ export default function UsersPage() {
   };
 
   const handleFormSubmit = async (formData) => {
-    if (editingUser) {
-      await userService.update(editingUser.id, formData);
-    } else {
-      const res = await userService.create(formData);
-      // If the new user is a member, trigger the membership application flow
-      if (formData.role === 'member' && res.user_id) {
-        setNewMemberId(res.user_id);
+    try {
+      if (editingUser) {
+        const isBecomingMember = editingUser.role !== 'member' && formData.role === 'member';
+        await userService.update(editingUser.id, formData);
+        if (isBecomingMember) {
+          setNewlyCreatedUser({
+            id: editingUser.id,
+            first_name: formData.first_name,
+            last_name: formData.last_name
+          });
+          setNewMemberId(editingUser.id);
+        }
+      } else {
+        const res = await userService.create(formData);
+        if (formData.role === 'member' && res.user_id) {
+          setNewlyCreatedUser({
+            id: res.user_id,
+            first_name: formData.first_name,
+            last_name: formData.last_name
+          });
+          setNewMemberId(res.user_id);
+        }
       }
+      setEditingUser(null);
+      setShowModal(false);
+      fetchUsers();
+    } catch (err) {
+      console.error("Submission failed", err);
+      alert("Failed to save user.");
     }
-    setEditingUser(null);
-    fetchUsers();
-    setShowModal(false);
   };
 
   const filteredUsers = users.filter(u => {
@@ -190,11 +209,13 @@ export default function UsersPage() {
         {newMemberId && (
           <MembershipApplicationForm
             // Pass a single-item list containing the new user so the form pre-selects them
+            member={newlyCreatedUser}
             membersList={users.filter(u => u.id === parseInt(newMemberId))}
-            onCancel={() => setNewMemberId(null)}
+            onCancel={() => { setNewMemberId(null); setNewlyCreatedUser(null); }}
             onSubmit={async (payload) => {
               await membershipService.create(payload);
               setNewMemberId(null);
+              setNewlyCreatedUser(null);
               fetchUsers(); // Refresh to see updated status/membership details if any
             }}
           />
