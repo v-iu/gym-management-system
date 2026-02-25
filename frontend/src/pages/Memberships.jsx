@@ -66,7 +66,14 @@ export default function MembershipsPage() {
         {row.membership_status}
       </span>
     )},
-    { key: 'actions', label: 'Actions', align: 'right', render: (row) => (
+    { key: 'actions', label: 'Actions', align: 'right', render: (row) => {
+      //gets the days left
+      const end = row.end_date ? new Date(row.end_date) : null;
+      const now = new Date();
+      const diffDays = end ? Math.ceil((end - now) / (1000 * 60 * 60 * 24)) : 0;
+      //decides if pay/renew should show
+      const shouldShowRenew = diffDays < 30 || row.membership_status === 'expired';
+      return (
       <div className="flex gap-2 justify-end">
         {(row.membership_status === 'active' || row.membership_status === 'paused') && (
           <button 
@@ -76,15 +83,20 @@ export default function MembershipsPage() {
             {row.membership_status === 'active' ? 'Pause' : 'Resume'}
           </button>
         )}
-        <button 
-          onClick={() => setRenewingMembership(row)}
-          className="px-2 py-1 text-xs rounded bg-blue-500/20 text-blue-400 border border-blue-500/30 hover:bg-blue-500/30 font-medium transition-colors"
-        >
-          Pay Early / Renew
-        </button>
+
+        {shouldShowRenew && (
+          <button 
+            onClick={() => setRenewingMembership(row)}
+            className="px-2 py-1 text-xs rounded bg-blue-500/20 text-blue-400 border border-blue-500/30 hover:bg-blue-500/30 font-medium transition-colors"
+          >
+            Pay Early / Renew
+          </button>
+        )}
       </div>
-    )},
-  ];
+    );
+  }
+},
+];
 
   return (
     <div>

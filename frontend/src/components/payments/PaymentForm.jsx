@@ -22,7 +22,17 @@ export default function PaymentForm({ defaultValues = {}, includeUser = false, o
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    // validation logic remains unchanged...
+    setLoading(true);
+    try {
+      if (!values.amount || values.amount <= 0) {
+        throw new Error('Please enter a valid amount');
+      }
+      await onSubmit(values); 
+    } catch (err) {
+      setError(err.message || 'An error occurred while saving');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -48,7 +58,7 @@ export default function PaymentForm({ defaultValues = {}, includeUser = false, o
         <div>
           <label className="block text-sm font-medium text-gray-400 mb-1">Amount (₱)</label>
           {includeUser && values.payment_type === 'one-time' ? (
-            <div className="w-full bg-white/10 border border-white/10 rounded-lg px-3 py-2 text-sm text-white">₱{(values.amount || 50).toFixed(2)}</div>
+            <div className="w-full bg-white/10 border border-white/10 rounded-lg px-3 py-2 text-sm text-white">₱{Number(values.amount || 50).toFixed(2)}</div>
           ) : (
             <input
               name="amount"

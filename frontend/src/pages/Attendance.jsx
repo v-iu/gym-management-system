@@ -56,7 +56,7 @@ export default function AttendancePage() {
 
     setTimeout(() => setCheckinMsg(null), 4000);
   };
-
+  
   const handleCheckout = async (row) => {
     try {
       await checkout(row.id);
@@ -65,9 +65,10 @@ export default function AttendancePage() {
     }
   };
 
-  const paymentGuest = pendingGuestId 
-    ? guests.find(g => g.id === parseInt(pendingGuestId, 10)) 
-    : (selectedUser?.role === 'guest' ? selectedUser : null);
+  const paymentGuest = guests.find(g => 
+    String(g.id) === String(pendingGuestId) || 
+    (selectedUser?.role === 'guest' && String(g.id) === String(selectedUser.id))
+  );
 
   return (
     <div>
@@ -104,31 +105,39 @@ export default function AttendancePage() {
       />
 
       <Modal isOpen={showPaymentModal} onClose={() => { setShowPaymentModal(false); setPendingGuestId(null); }} title="Collect Guest Payment">
-        {paymentGuest && (
+        {paymentGuest ? (
           <GuestPaymentForm
             guest={paymentGuest}
             onCancel={() => { setShowPaymentModal(false); setPendingGuestId(null); }}
             onSubmit={async (payload) => {
-              await paymentService.create(payload);
-              setShowPaymentModal(false);
-
               try {
-                const uid = paymentGuest.id;
-                await checkin({ 
-                  role: 'guest', 
-                  user_id: Number.isNaN(uid) ? undefined : uid
-                });
+                // 1. Create the payment
+                await paymentService.create(payload);
+                
+                // 2. Close modal immediately so UI doesn't feel "stuck"
+                setShowPaymentModal(false); 
+                
+                // 3. Attempt check-in
+                const res = await checkin({ role: 'guest', user_id: paymentGuest.id });
                 setCheckinMsg({ type: 'success', text: 'Payment recorded and checked in' });
               } catch (err) {
-                console.error('Checkin after payment failed', err);
-                setCheckinMsg({ type: 'error', text: 'Payment recorded but check-in failed' });
+                console.error('Payment/Check-in flow failed:', err);
+                const errMsg = err?.response?.data?.message || 'Payment success, but check-in failed';
+                setCheckinMsg({ type: 'error', text: errMsg });
+                setShowPaymentModal(false);
+              } finally {
+                setPendingGuestId(null);
+                setTimeout(() => setCheckinMsg(null), 4000);
               }
-              setPendingGuestId(null);
-              setTimeout(() => setCheckinMsg(null), 2500);
             }}
           />
-        )}
-      </Modal>
+  ) : (
+    <div className="p-6 text-center">
+      <p className="text-gray-400 text-sm">Loading guest details...</p>
+      <p className="text-xs text-zinc-600 mt-2">Searching for ID: {pendingGuestId}</p>
+    </div>
+  )}
+</Modal>
     </div>
   );
 }

@@ -37,7 +37,6 @@ export default function PaymentsPage() {
     const matchesType = typeFilter === 'all' || p.payment_type === typeFilter;
     return matchesSearch && matchesType;
   });
-
   const columns = [
     { key: 'id', label: 'ID' },
     { key: 'payment_type', label: 'Type', render: (row) => (
@@ -148,7 +147,17 @@ export default function PaymentsPage() {
           includeUser={true}
           defaultValues={editing || { payment_type: 'one-time', method: 'cash', is_paid: true }}
           submitLabel={'Save'}
-          onSubmit={async (payload) => {
+          onSubmit={async (values) => {
+            const payload = {
+              ...values,
+              membership_id: values.membership_id || null,
+              staff_id: values.staff_id || null,
+              user_id: values.user_id || null,
+              amount: parseFloat(values.amount),
+              tendered: values.tendered ? parseFloat(values.tendered) : null,
+              is_paid: values.is_paid ? 1 : 0
+            };
+
             if (editing) {
               await update(editing.id, payload);
             } else {
